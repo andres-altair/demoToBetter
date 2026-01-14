@@ -4,10 +4,7 @@ import lombok.AllArgsConstructor;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-/**
- * REST controller for managing User resources.
- * @author andres
- */
+
 import org.springframework.web.bind.annotation.*;
 
 import com.andres.demoToBetter.modules.users.dto.UserCreateDTO;
@@ -20,7 +17,10 @@ import com.andres.demoToBetter.modules.users.service.UserService;
 import jakarta.validation.Valid;
 
 import java.util.List;
-
+/**
+ * REST controller for managing User resources.
+ * @author andres
+ */
 @RestController
 @RequestMapping("/api/users")
 @AllArgsConstructor
