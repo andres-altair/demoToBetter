@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import jakarta.validation.Valid;
 /**
  * Global exception handler for REST controllers.
- * Handles validation errors and runtime exceptions across the entire application.
  * @author andres
  */
 @RestControllerAdvice
@@ -47,5 +46,4 @@ public class GlobalExceptionHandler {
         error.put("error", ex.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
     }
-
 }
