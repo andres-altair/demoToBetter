@@ -27,6 +27,7 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
+    private final UserMapper userMapper;
 
     /**
      * Retrieves all users from the system.
@@ -37,7 +38,7 @@ public class UserController {
     public ResponseEntity<List<UserDTO>> getAll() {
         List<UserDTO> users = userService.findAll()
             .stream()
-            .map(UserMapper::toDTO)
+            .map(userMapper::toDTO)
             .toList();
         if (users.isEmpty()) {
         return ResponseEntity.noContent().build(); // 204
@@ -54,7 +55,7 @@ public class UserController {
     @GetMapping("/{id}")
     public ResponseEntity<UserDTO> getById(@PathVariable Long id) {
     return userService.findById(id)
-        .map(UserMapper::toDTO)
+        .map(userMapper::toDTO)
         .map(ResponseEntity::ok)
         .orElse(ResponseEntity.notFound().build());
     }
@@ -67,9 +68,9 @@ public class UserController {
      */
     @PostMapping
     public ResponseEntity<UserDTO> create(@Valid @RequestBody UserCreateDTO dto) {
-    User user = UserMapper.toEntity(dto);
+    User user = userMapper.toEntity(dto);
     User saved = userService.save(user);
-    UserDTO response = UserMapper.toDTO(saved);
+    UserDTO response = userMapper.toDTO(saved);
     return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
     
@@ -96,13 +97,11 @@ public class UserController {
  * @param dto the updated user data
  * @return ResponseEntity containing the updated UserDTO or a 404 status
  */
-@PutMapping("/{id}")
-public ResponseEntity<UserDTO> update(
-        @PathVariable Long id,
-        @Valid @RequestBody UserUpdateDTO dto) {
-            User user = UserMapper.toEntity(dto);
+    @PutMapping("/{id}")
+    public ResponseEntity<UserDTO> update(@PathVariable Long id,@Valid @RequestBody UserUpdateDTO dto) {
+        User user = userMapper.toEntity(dto);
         User updated = userService.update(id, user);
-        UserDTO response = UserMapper.toDTO(updated);
+        UserDTO response = userMapper.toDTO(updated);
         return ResponseEntity.ok(response);
     }
 }
