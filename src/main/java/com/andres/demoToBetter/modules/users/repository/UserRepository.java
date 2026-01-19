@@ -7,6 +7,7 @@ import com.andres.demoToBetter.modules.users.model.User;
 
 import java.util.Optional;
 
+
 /**
  * Repository interface for managing User entities.
  * @author andres
@@ -37,4 +38,12 @@ public interface UserRepository extends JpaRepository<User, Long> {
      * @return an Optional containing the User if found, or empty if not found
      */
     Optional<User> findByUsername(String username);
+
+    /**
+     * Find a user by its email
+     * 
+     * @param email the email to search of
+     * @return an Optional containing the User if found, or empty if not found
+     */
+    Optional<User> findByEmail (String email);
 }
