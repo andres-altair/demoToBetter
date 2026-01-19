@@ -9,7 +9,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import jakarta.validation.Valid;
 /**
  * Global exception handler for REST controllers.
  * @author andres
@@ -18,16 +17,14 @@ import jakarta.validation.Valid;
 public class GlobalExceptionHandler {
     /**
      * Handles validation errors triggered by @Valid annotation.
-     * Extracts field errors and returns them as a JSON map with HTTP 400 status.
      *
      * @param ex the exception thrown when validation fails
      * @return a ResponseEntity containing the validation errors
      */
-    @Valid
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Map<String,String>> handelValidationErrors(MethodArgumentNotValidException ex){
+    public ResponseEntity<Map<String,String>> handleValidationErrors(MethodArgumentNotValidException ex){
         Map<String,String> errors = new HashMap<>();
-        ex.getBindingResult().getFieldErrors().forEach(error->
+        ex.getBindingResult().getFieldErrors().forEach(error-> 
             errors.put(error.getField(), error.getDefaultMessage())
         );
         return ResponseEntity.badRequest().body(errors);
@@ -35,7 +32,6 @@ public class GlobalExceptionHandler {
 
     /**
      * Handles generic RuntimeExceptions thrown anywhere in the application.
-     * Returns a simple error message with HTTP 400 status.
      *
      * @param ex the runtime exception thrown
      * @return a ResponseEntity containing the error message
@@ -45,5 +41,17 @@ public class GlobalExceptionHandler {
         Map<String,String> error= new HashMap<>();
         error.put("error", ex.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+    }
+
+    /**
+     * Handle generic Exception thrown anywherein in the application
+     * @param ex the exception thrown
+     * @return a ReponseEntity containing the error message
+     */
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<Map<String,String>> handleUnexpected (Exception ex){
+        Map<String,String> error = new HashMap<>();
+        error.put("error", "Unexpected error: " + ex.getMessage());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
     }
 }
