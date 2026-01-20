@@ -11,12 +11,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
+
+import com.andres.demoToBetter.common.exception.handler.GlobalExceptionHandler;
 @WebMvcTest(controllers = FakeErrorController.class)
 public class GlobalExceptionHandlerTest {
 @Autowired
     private MockMvc mockMvc;
 
-    // Necesario para que Spring cargue tu handler real
     @Import(GlobalExceptionHandler.class)
     static class Config {}
 

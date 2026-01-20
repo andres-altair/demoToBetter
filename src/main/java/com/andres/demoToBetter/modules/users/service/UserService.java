@@ -5,6 +5,8 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import com.andres.demoToBetter.common.exception.custom.ConflictException;
+import com.andres.demoToBetter.common.exception.custom.NotFoundException;
 import com.andres.demoToBetter.modules.users.model.User;
 import com.andres.demoToBetter.modules.users.repository.UserRepository;
 
@@ -57,7 +59,7 @@ public class UserService {
      */
     public User save(User user) {
     if (repository.existsByEmail(user.getEmail())) {
-        throw new RuntimeException("Email already exists: " + user.getEmail());
+        throw new ConflictException( "USR_409", "Email already exists: " + user.getEmail() );
     }
     return repository.save(user);
     }
@@ -71,7 +73,7 @@ public class UserService {
      */
     public void delete(Long id) { 
         if (!repository.existsById(id)) {
-            throw new RuntimeException("User with ID " + id + " does not exist");
+            throw new NotFoundException( "USR_404", "User with ID " + id + " does not exist" );
         }
         repository.deleteById(id); 
     } 
@@ -84,11 +86,10 @@ public class UserService {
      * @return the updated User entity
      */
     public User update(Long id, User updatedUser) {
-        User existing = repository.findById(id)
-            .orElseThrow(() -> new RuntimeException("User with ID " + id + " does not exist"));
-        if (!existing.getEmail().equals(updatedUser.getEmail()) &&
-            repository.existsByEmail(updatedUser.getEmail())) {
-            throw new RuntimeException("Email already exists: " + updatedUser.getEmail());
+        User existing = repository.findById(id) 
+        .orElseThrow(() -> new NotFoundException( "USR_404", "User with ID " + id + " does not exist" )); 
+        if (!existing.getEmail().equals(updatedUser.getEmail()) && repository.existsByEmail(updatedUser.getEmail())) { 
+            throw new ConflictException( "USR_409", "Email already exists: " + updatedUser.getEmail() ); 
         }
         existing.setUsername(updatedUser.getUsername());
         existing.setEmail(updatedUser.getEmail());
