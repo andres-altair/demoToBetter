@@ -41,9 +41,9 @@ public class UserController {
             .map(userMapper::toDTO)
             .toList();
         if (users.isEmpty()) {
-        return ResponseEntity.noContent().build(); // 204
+        return ResponseEntity.noContent().build(); 
     }
-    return ResponseEntity.ok(users); // 200
+    return ResponseEntity.ok(users); 
     }
     
     /**
@@ -81,14 +81,11 @@ public class UserController {
      * @return ResponseEntity with appropriate HTTP status
      */
     @DeleteMapping("/{id}")
-    public ResponseEntity<Object> delete(@PathVariable Long id) {
-        return userService.findById(id)
-        .map(user -> {
-            userService.delete(id);
-            return ResponseEntity.noContent().build(); // 204
-        })
-        .orElse(ResponseEntity.notFound().build()); // 404
-    }
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        userService.delete(id); 
+        return ResponseEntity.noContent().build();
+}
+
 
 /**
  * Updates an existing user by its ID.
