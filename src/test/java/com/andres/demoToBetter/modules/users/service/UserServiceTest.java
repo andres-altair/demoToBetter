@@ -25,25 +25,6 @@ class UserServiceTest {
     @InjectMocks
     private UserService service; 
 
-    /**@Test
-    void findAll_UsersExist_ReturnsUserList() {
-        List<User> mockUsers = List.of(
-            new User(1L, "andres", "andres@mail.com"),
-            new User(2L, "maria", "maria@mail.com")
-        );
-
-        when(repository.findAll()).thenReturn(mockUsers);
-
-        List<User> result = service.findAll();
-
-        assertEquals(2, result.size(), "Debe devolver 2 usuarios");
-        assertEquals("andres", result.get(0).getUsername());
-        assertEquals("maria", result.get(1).getUsername());
-
-        verify(repository, times(1)).findAll();
-        verifyNoMoreInteractions(repository);
-    }*/
-
     @Test
     void findById_UserExists_ReturnUser(){
         User user = new User(1L, "andres", "andres@mail.com");
