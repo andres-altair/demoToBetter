@@ -84,6 +84,9 @@ public class UserService {
      * @return an Optional containing the User if found, otherwise empty
      */
     public Optional<User> findByUsername(String username) { 
+        if (username == null) {
+            throw new BadRequestException("USR_400", "Username cannot be null");
+        }
         return repository.findByUsername(username);
     } 
 
@@ -94,12 +97,11 @@ public class UserService {
      * @return the saved User entity
      */
     public User save(User user) {
-    if (repository.existsByEmail(user.getEmail())) {
-        throw new ConflictException( "USR_409", "Email already exists: " + user.getEmail() );
+        if (repository.existsByEmail(user.getEmail())) {
+            throw new ConflictException( "USR_409", "Email already exists: " + user.getEmail() );
+        }
+        return repository.save(user);
     }
-    return repository.save(user);
-    }
-
 
     /**
      * Deletes a user by its ID.
@@ -134,7 +136,7 @@ public class UserService {
         if (!existing.getEmail().equals(updatedUser.getEmail()) && repository.existsByEmail(updatedUser.getEmail())) { 
             throw new ConflictException( "USR_409", "Email already exists: " + updatedUser.getEmail() ); 
         }
-        
+
         existing.setUsername(updatedUser.getUsername());
         existing.setEmail(updatedUser.getEmail());
         return repository.save(existing);
