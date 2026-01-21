@@ -1,4 +1,4 @@
-package com.andres.demoToBetter.modules.users.model;
+package com.andres.demotobetter.modules.users.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

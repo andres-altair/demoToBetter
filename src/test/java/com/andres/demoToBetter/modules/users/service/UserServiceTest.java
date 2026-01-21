@@ -1,12 +1,15 @@
 package com.andres.demoToBetter.modules.users.service;
 
-import com.andres.demoToBetter.modules.users.model.User;
-import com.andres.demoToBetter.modules.users.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import com.andres.demotobetter.modules.users.model.User;
+import com.andres.demotobetter.modules.users.repository.UserRepository;
+import com.andres.demotobetter.modules.users.service.UserService;
+
 import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -107,7 +110,7 @@ class UserServiceTest {
         );
         assertEquals("User with ID 1 does not exist", ex.getMessage());
         verify(repository).existsById(anyLong());
-        verify(repository,never()).deleteById(any());
+        verify(repository,never()).deleteById(anyLong());
         verifyNoMoreInteractions(repository);
     }
 
@@ -152,9 +155,12 @@ class UserServiceTest {
     void update_WhenUserNotExist_ThrowException(){
         when(repository.findById(1L)).thenReturn(Optional.empty());
 
+        User updated = new User(null, "new", "new@mail.com");
+
         RuntimeException ex = assertThrows(RuntimeException.class,
-            ()->service.update(1L, new User(null, "new", "new@mail.com")),
+            ()->service.update(1L, updated),
             "Debe lanzar excepción si el usuario no existe");
+        
         assertEquals("User with ID 1 does not exist", ex.getMessage());
         verify(repository).findById(1L);
         verify(repository,never()).save(any());

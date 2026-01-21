@@ -1,4 +1,4 @@
-package com.andres.demoToBetter.common.exception.custom;
+package com.andres.demotobetter.common.exception.custom;
 /**
  * Exception thrown when a requested resource cannot be found.
  * @author andres

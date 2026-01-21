@@ -1,4 +1,4 @@
-package com.andres.demoToBetter.modules.users.dto;
+package com.andres.demotobetter.modules.users.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

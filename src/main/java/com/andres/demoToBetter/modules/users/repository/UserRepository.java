@@ -1,10 +1,10 @@
-package com.andres.demoToBetter.modules.users.repository;
+package com.andres.demotobetter.modules.users.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
-import com.andres.demoToBetter.modules.users.model.User;
+import com.andres.demotobetter.modules.users.model.User;
 
 import java.util.Optional;
 

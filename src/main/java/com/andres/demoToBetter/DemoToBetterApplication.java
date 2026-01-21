@@ -1,4 +1,4 @@
-package com.andres.demoToBetter;
+package com.andres.demotobetter;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

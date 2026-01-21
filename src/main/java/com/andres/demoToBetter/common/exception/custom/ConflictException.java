@@ -1,4 +1,4 @@
-package com.andres.demoToBetter.common.exception.custom;
+package com.andres.demotobetter.common.exception.custom;
 /**
  * Exception thrown when a request cannot be completed due to a conflict
  * @author andres
