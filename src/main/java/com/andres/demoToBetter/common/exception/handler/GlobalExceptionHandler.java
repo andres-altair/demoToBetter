@@ -10,7 +10,11 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
-
+/**
+ * Class responsible for converting application exceptions into standardized API error responses.
+ * 
+ * @author andres
+ */
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -44,6 +48,15 @@ public class GlobalExceptionHandler {
                 .body(buildError("SYS_500", "Internal error", ex.getMessage(), 500, request));
     }
 
+    /**
+     * Utility method for building a standardized ErrorDTO object.
+     *
+     * @param code    custom application error code
+     * @param message human-readable error message
+     * @param detail  additional context about the error
+     * @param status  HTTP status code
+     * @param request the HTTP request that triggered the error
+     */
     private ErrorDTO buildError(String code, String message, String detail, int status, HttpServletRequest request) {
         return ErrorDTO.builder()
                 .code(code)

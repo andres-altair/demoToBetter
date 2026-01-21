@@ -3,12 +3,19 @@ package com.andres.demoToBetter.modules.users.service;
 import java.util.List;
 import java.util.Optional;
 
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import com.andres.demoToBetter.common.exception.custom.BadRequestException;
 import com.andres.demoToBetter.common.exception.custom.ConflictException;
 import com.andres.demoToBetter.common.exception.custom.NotFoundException;
+import com.andres.demoToBetter.modules.users.dto.UserFilterDTO;
 import com.andres.demoToBetter.modules.users.model.User;
 import com.andres.demoToBetter.modules.users.repository.UserRepository;
+import com.andres.demoToBetter.modules.users.spec.UserSpecification;
 
 import lombok.AllArgsConstructor;
 
@@ -19,7 +26,9 @@ import lombok.AllArgsConstructor;
 @Service
 @AllArgsConstructor
 public class UserService { 
-    
+    private static final int MAX_PAGE_SIZE = 50;
+    private static final List<String> ALLOWED_SORT_FIELDS = List.of("id", "username", "email");
+
     private final UserRepository repository; 
 
     /**
@@ -27,9 +36,33 @@ public class UserService {
      *
      * @return a list of User entities
      */
-    public List<User> findAll() { 
-        return repository.findAll(); 
-    } 
+    public Page<User> findAll(UserFilterDTO filter, Pageable pageable) {
+
+        // Validar tamaño máximo
+        if (pageable.getPageSize() > 50) {
+            throw new BadRequestException("USR_400","Page size cannot exceed " + MAX_PAGE_SIZE);
+        }
+
+        // Validar página negativa
+        if (pageable.getPageNumber() < 0) {
+            throw new BadRequestException("USR_400","Page number cannot be negative");
+        }
+
+        // Validar campos permitidos para ordenar
+        pageable.getSort().forEach(order -> {
+            if (!ALLOWED_SORT_FIELDS.contains(order.getProperty())) {
+                throw new BadRequestException("USR_400","Sorting by '" + order.getProperty() + "' is not allowed");
+            }
+        });
+
+        Specification<User> spec = Specification.allOf(
+        UserSpecification.usernameContains(filter.getUsername()),
+        UserSpecification.emailContains(filter.getEmail()));
+        
+        return repository.findAll(spec,pageable);
+    }
+
+
 
     /**
      * Retrieves a user by its ID.

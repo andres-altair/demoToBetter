@@ -4,7 +4,10 @@ import java.time.LocalDateTime;
 
 import lombok.Builder;
 import lombok.Data;
-
+/**
+ * Data Transfer Object representing a standardized error response.
+ * @author anddres
+ */
 @Data
 @Builder
 public class ErrorDTO {
