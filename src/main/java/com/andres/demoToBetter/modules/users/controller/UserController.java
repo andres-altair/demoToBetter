@@ -1,4 +1,4 @@
-package com.andres.demoToBetter.modules.users.controller;
+package com.andres.demotobetter.modules.users.controller;
 
 import lombok.AllArgsConstructor;
 
@@ -9,13 +9,13 @@ import org.springframework.http.ResponseEntity;
 
 import org.springframework.web.bind.annotation.*;
 
-import com.andres.demoToBetter.modules.users.dto.UserCreateDTO;
-import com.andres.demoToBetter.modules.users.dto.UserDTO;
-import com.andres.demoToBetter.modules.users.dto.UserFilterDTO;
-import com.andres.demoToBetter.modules.users.dto.UserUpdateDTO;
-import com.andres.demoToBetter.modules.users.mapper.UserMapper;
-import com.andres.demoToBetter.modules.users.model.User;
-import com.andres.demoToBetter.modules.users.service.UserService;
+import com.andres.demotobetter.modules.users.dto.UserCreateDTO;
+import com.andres.demotobetter.modules.users.dto.UserDTO;
+import com.andres.demotobetter.modules.users.dto.UserFilterDTO;
+import com.andres.demotobetter.modules.users.dto.UserUpdateDTO;
+import com.andres.demotobetter.modules.users.mapper.UserMapper;
+import com.andres.demotobetter.modules.users.model.User;
+import com.andres.demotobetter.modules.users.service.UserService;
 
 import jakarta.validation.Valid;
 /**
@@ -32,9 +32,12 @@ public class UserController {
     private final UserMapper userMapper;
 
     /**
-     * Retrieves all users with pagination.
-     *
-     * @return Page<UserDTO>
+     * Retrieves a paginated list of users with optional filtering.
+     * 
+     * @param username optional filter to search users whose username contains the given value
+     * @param email optional filter to search users whose email contains the given value
+     * @param pageable pagination and sorting information automatically resolved by Spring
+     * @return a paginated list of UserDTO objects
      */
     @GetMapping
     public ResponseEntity<Page<UserDTO>> getAll(
@@ -50,9 +53,7 @@ public class UserController {
             .map(userMapper::toDTO);
 
         return ResponseEntity.ok(users);
-}
-
-
+    }
 
     /**
      * Retrieves a user by its ID.

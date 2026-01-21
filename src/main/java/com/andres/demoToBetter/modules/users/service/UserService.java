@@ -1,4 +1,4 @@
-package com.andres.demoToBetter.modules.users.service;
+package com.andres.demotobetter.modules.users.service;
 
 import java.util.List;
 import java.util.Optional;
@@ -9,13 +9,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import com.andres.demoToBetter.common.exception.custom.BadRequestException;
-import com.andres.demoToBetter.common.exception.custom.ConflictException;
-import com.andres.demoToBetter.common.exception.custom.NotFoundException;
-import com.andres.demoToBetter.modules.users.dto.UserFilterDTO;
-import com.andres.demoToBetter.modules.users.model.User;
-import com.andres.demoToBetter.modules.users.repository.UserRepository;
-import com.andres.demoToBetter.modules.users.spec.UserSpecification;
+import com.andres.demotobetter.common.exception.custom.BadRequestException;
+import com.andres.demotobetter.common.exception.custom.ConflictException;
+import com.andres.demotobetter.common.exception.custom.NotFoundException;
+import com.andres.demotobetter.modules.users.dto.UserFilterDTO;
+import com.andres.demotobetter.modules.users.model.User;
+import com.andres.demotobetter.modules.users.repository.UserRepository;
+import com.andres.demotobetter.modules.users.spec.UserSpecification;
 
 import lombok.AllArgsConstructor;
 
@@ -32,23 +32,22 @@ public class UserService {
     private final UserRepository repository; 
 
     /**
-     * Retrieves all users from the database.
+     * Retrieves a paginated list of users applying optional filtering and sorting rules.
      *
-     * @return a list of User entities
+     * @param filter   DTO containing optional filter values (username, email)
+     * @param pageable pagination and sorting information provided by Spring
+     * @return a paginated list of User entities matching the filter criteria
      */
     public Page<User> findAll(UserFilterDTO filter, Pageable pageable) {
 
-        // Validar tamaño máximo
         if (pageable.getPageSize() > 50) {
             throw new BadRequestException("USR_400","Page size cannot exceed " + MAX_PAGE_SIZE);
         }
 
-        // Validar página negativa
         if (pageable.getPageNumber() < 0) {
             throw new BadRequestException("USR_400","Page number cannot be negative");
         }
 
-        // Validar campos permitidos para ordenar
         pageable.getSort().forEach(order -> {
             if (!ALLOWED_SORT_FIELDS.contains(order.getProperty())) {
                 throw new BadRequestException("USR_400","Sorting by '" + order.getProperty() + "' is not allowed");
@@ -71,6 +70,10 @@ public class UserService {
      * @return an Optional containing the User if found, otherwise empty
      */
     public Optional<User> findById(Long id) { 
+        if (id == null) {
+            throw new BadRequestException("USR_400", "ID cannot be null");
+        }
+
         return repository.findById(id); 
     } 
 
@@ -100,11 +103,14 @@ public class UserService {
 
     /**
      * Deletes a user by its ID.
-     * If the user does not exist, a RuntimeException is thrown.
      *
      * @param id the ID of the user to delete
      */
     public void delete(Long id) { 
+        if (id == null) {
+            throw new BadRequestException("USR_400", "ID cannot be null");
+        }
+
         if (!repository.existsById(id)) {
             throw new NotFoundException( "USR_404", "User with ID " + id + " does not exist" );
         }
@@ -119,11 +125,16 @@ public class UserService {
      * @return the updated User entity
      */
     public User update(Long id, User updatedUser) {
+        if (id == null) {
+            throw new BadRequestException("USR_400", "ID cannot be null");
+        }
+
         User existing = repository.findById(id) 
         .orElseThrow(() -> new NotFoundException( "USR_404", "User with ID " + id + " does not exist" )); 
         if (!existing.getEmail().equals(updatedUser.getEmail()) && repository.existsByEmail(updatedUser.getEmail())) { 
             throw new ConflictException( "USR_409", "Email already exists: " + updatedUser.getEmail() ); 
         }
+        
         existing.setUsername(updatedUser.getUsername());
         existing.setEmail(updatedUser.getEmail());
         return repository.save(existing);

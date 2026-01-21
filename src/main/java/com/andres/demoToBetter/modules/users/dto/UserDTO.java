@@ -1,4 +1,4 @@
-package com.andres.demoToBetter.modules.users.dto;
+package com.andres.demotobetter.modules.users.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

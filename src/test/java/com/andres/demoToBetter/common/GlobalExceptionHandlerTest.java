@@ -12,9 +12,9 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.andres.demoToBetter.common.exception.handler.GlobalExceptionHandler;
+import com.andres.demotobetter.common.exception.handler.GlobalExceptionHandler;
 @WebMvcTest(controllers = FakeErrorController.class)
-public class GlobalExceptionHandlerTest {
+class GlobalExceptionHandlerTest {
 @Autowired
     private MockMvc mockMvc;
 

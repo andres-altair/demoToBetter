@@ -13,14 +13,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.andres.demoToBetter.modules.users.model.User;
-import com.andres.demoToBetter.modules.users.repository.UserRepository;
+import com.andres.demotobetter.modules.users.model.User;
+import com.andres.demotobetter.modules.users.repository.UserRepository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class integration {
+class UserIntegrationTest {
     @Autowired
     private MockMvc mockMvc;
     @Autowired

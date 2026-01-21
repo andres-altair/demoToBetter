@@ -1,4 +1,4 @@
-package com.andres.demoToBetter.common.exception.dto;
+package com.andres.demotobetter.common.exception.dto;
 
 import java.time.LocalDateTime;
 

@@ -1,4 +1,4 @@
-package com.andres.demoToBetter.common.exception.custom;
+package com.andres.demotobetter.common.exception.custom;
 /**
  * Base exception class for application-specific errors.
  * @author andres

@@ -22,12 +22,13 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.andres.demoToBetter.modules.users.dto.UserCreateDTO;
-import com.andres.demoToBetter.modules.users.dto.UserDTO;
-import com.andres.demoToBetter.modules.users.dto.UserUpdateDTO;
-import com.andres.demoToBetter.modules.users.mapper.UserMapper;
-import com.andres.demoToBetter.modules.users.model.User;
-import com.andres.demoToBetter.modules.users.service.UserService;
+import com.andres.demotobetter.modules.users.controller.UserController;
+import com.andres.demotobetter.modules.users.dto.UserCreateDTO;
+import com.andres.demotobetter.modules.users.dto.UserDTO;
+import com.andres.demotobetter.modules.users.dto.UserUpdateDTO;
+import com.andres.demotobetter.modules.users.mapper.UserMapper;
+import com.andres.demotobetter.modules.users.model.User;
+import com.andres.demotobetter.modules.users.service.UserService;
 @WebMvcTest(UserController.class)
 class UserControllerTest {
     @Autowired
