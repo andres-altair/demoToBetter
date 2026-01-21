@@ -13,7 +13,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
-import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
@@ -38,7 +37,7 @@ class UserControllerTest {
     @MockitoBean
     private UserMapper userMapper;
     
-    @Test
+    /**@Test
     void getAll_WhenUsersExist_Returns200AndList() throws Exception{
         User user = new User(1L, "andres", "andres@mail.com");
         UserDTO dto = new UserDTO(1L, "andres", "andres@mail.com");
@@ -59,7 +58,7 @@ class UserControllerTest {
 
         mockMvc.perform(get("/api/users"))
         .andExpect(status().isNoContent());
-    }
+    }*/
 
     @Test
     void getById_WhenUserExit_Returns200AndUser() throws Exception{

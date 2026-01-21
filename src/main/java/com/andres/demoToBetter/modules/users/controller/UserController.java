@@ -2,6 +2,8 @@ package com.andres.demoToBetter.modules.users.controller;
 
 import lombok.AllArgsConstructor;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -9,16 +11,16 @@ import org.springframework.web.bind.annotation.*;
 
 import com.andres.demoToBetter.modules.users.dto.UserCreateDTO;
 import com.andres.demoToBetter.modules.users.dto.UserDTO;
+import com.andres.demoToBetter.modules.users.dto.UserFilterDTO;
 import com.andres.demoToBetter.modules.users.dto.UserUpdateDTO;
 import com.andres.demoToBetter.modules.users.mapper.UserMapper;
 import com.andres.demoToBetter.modules.users.model.User;
 import com.andres.demoToBetter.modules.users.service.UserService;
 
 import jakarta.validation.Valid;
-
-import java.util.List;
 /**
  * REST controller for managing User resources.
+ * 
  * @author andres
  */
 @RestController
@@ -30,22 +32,28 @@ public class UserController {
     private final UserMapper userMapper;
 
     /**
-     * Retrieves all users from the system.
+     * Retrieves all users with pagination.
      *
-     * @return ResponseEntity containing a list of UserDTO objects or an empty response
+     * @return Page<UserDTO>
      */
     @GetMapping
-    public ResponseEntity<List<UserDTO>> getAll() {
-        List<UserDTO> users = userService.findAll()
-            .stream()
-            .map(userMapper::toDTO)
-            .toList();
-        if (users.isEmpty()) {
-        return ResponseEntity.noContent().build(); 
-    }
-    return ResponseEntity.ok(users); 
-    }
-    
+    public ResponseEntity<Page<UserDTO>> getAll(
+        @RequestParam(required = false) String username,
+        @RequestParam(required = false) String email,
+        Pageable pageable) {
+
+        UserFilterDTO filter = new UserFilterDTO();
+        filter.setUsername(username);
+        filter.setEmail(email);
+
+        Page<UserDTO> users = userService.findAll(filter, pageable)
+            .map(userMapper::toDTO);
+
+        return ResponseEntity.ok(users);
+}
+
+
+
     /**
      * Retrieves a user by its ID.
      *
@@ -54,12 +62,12 @@ public class UserController {
      */
     @GetMapping("/{id}")
     public ResponseEntity<UserDTO> getById(@PathVariable Long id) {
-    return userService.findById(id)
-        .map(userMapper::toDTO)
-        .map(ResponseEntity::ok)
-        .orElse(ResponseEntity.notFound().build());
+        return userService.findById(id)
+                .map(userMapper::toDTO)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
-    
+
     /**
      * Creates a new user.
      *
@@ -68,12 +76,12 @@ public class UserController {
      */
     @PostMapping
     public ResponseEntity<UserDTO> create(@Valid @RequestBody UserCreateDTO dto) {
-    User user = userMapper.toEntity(dto);
-    User saved = userService.save(user);
-    UserDTO response = userMapper.toDTO(saved);
-    return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        User user = userMapper.toEntity(dto);
+        User saved = userService.save(user);
+        UserDTO response = userMapper.toDTO(saved);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
-    
+
     /**
      * Deletes a user by its ID.
      *
@@ -82,20 +90,19 @@ public class UserController {
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
-        userService.delete(id); 
+        userService.delete(id);
         return ResponseEntity.noContent().build();
-}
+    }
 
-
-/**
- * Updates an existing user by its ID.
- *
- * @param id the ID of the user to update
- * @param dto the updated user data
- * @return ResponseEntity containing the updated UserDTO or a 404 status
- */
+    /**
+     * Updates an existing user by its ID.
+     *
+     * @param id  the ID of the user to update
+     * @param dto the updated user data
+     * @return ResponseEntity containing the updated UserDTO or a 404 status
+     */
     @PutMapping("/{id}")
-    public ResponseEntity<UserDTO> update(@PathVariable Long id,@Valid @RequestBody UserUpdateDTO dto) {
+    public ResponseEntity<UserDTO> update(@PathVariable Long id, @Valid @RequestBody UserUpdateDTO dto) {
         User user = userMapper.toEntity(dto);
         User updated = userService.update(id, user);
         UserDTO response = userMapper.toDTO(updated);

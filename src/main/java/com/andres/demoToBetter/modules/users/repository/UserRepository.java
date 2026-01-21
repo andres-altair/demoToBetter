@@ -1,6 +1,7 @@
 package com.andres.demoToBetter.modules.users.repository;
 
-import org.springframework.data.jpa.repository.JpaRepository; 
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
 import com.andres.demoToBetter.modules.users.model.User;
@@ -13,7 +14,7 @@ import java.util.Optional;
  * @author andres
  */
 @Repository 
-public interface UserRepository extends JpaRepository<User, Long> {
+public interface UserRepository extends JpaRepository<User, Long> , JpaSpecificationExecutor<User>{
 
     /**
      * Checks whether a user exists with the given username.
