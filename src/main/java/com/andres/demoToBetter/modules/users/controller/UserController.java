@@ -59,14 +59,12 @@ public class UserController {
      * Retrieves a user by its ID.
      *
      * @param id the ID of the user
-     * @return ResponseEntity containing the UserDTO or a 404 status
+     * @return ResponseEntity containing the UserDTO
      */
     @GetMapping("/{id}")
     public ResponseEntity<UserDTO> getById(@PathVariable Long id) {
-        return userService.findById(id)
-                .map(userMapper::toDTO)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        UserDTO user = userMapper.toDTO(userService.findById(id));
+        return ResponseEntity.ok(user);
     }
 
     /**
@@ -100,7 +98,7 @@ public class UserController {
      *
      * @param id  the ID of the user to update
      * @param dto the updated user data
-     * @return ResponseEntity containing the updated UserDTO or a 404 status
+     * @return ResponseEntity containing the updated UserDTO
      */
     @PutMapping("/{id}")
     public ResponseEntity<UserDTO> update(@PathVariable Long id, @Valid @RequestBody UserUpdateDTO dto) {
