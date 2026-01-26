@@ -2,13 +2,10 @@ package com.andres.demotobetter.modules.users.service;
 
 import java.util.List;
 import java.util.Optional;
-
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-
 import com.andres.demotobetter.common.exception.custom.BadRequestException;
 import com.andres.demotobetter.common.exception.custom.ConflictException;
 import com.andres.demotobetter.common.exception.custom.NotFoundException;
@@ -20,7 +17,7 @@ import com.andres.demotobetter.modules.users.spec.UserSpecification;
 import lombok.AllArgsConstructor;
 
 /**
- * Service layer responsible for handling business logic related to User entities.
+ * Service layer responsible for handling business logic related to User.
  * @author andres
  */
 @Service
@@ -28,6 +25,9 @@ import lombok.AllArgsConstructor;
 public class UserService { 
     private static final int MAX_PAGE_SIZE = 50;
     private static final List<String> ALLOWED_SORT_FIELDS = List.of("id", "username", "email");
+    private static final String ERR_BAD_REQUEST = "USR_400";
+    private static final String ERR_CONFLICT = "USR_409";
+    private static final String ERR_NOT_FOUND = "USR_404";
 
     private final UserRepository repository; 
 
@@ -41,16 +41,16 @@ public class UserService {
     public Page<User> findAll(UserFilterDTO filter, Pageable pageable) {
 
         if (pageable.getPageSize() > 50) {
-            throw new BadRequestException("USR_400","Page size cannot exceed " + MAX_PAGE_SIZE);
+            throw new BadRequestException(ERR_BAD_REQUEST,"Page size cannot exceed " + MAX_PAGE_SIZE);
         }
 
         if (pageable.getPageNumber() < 0) {
-            throw new BadRequestException("USR_400","Page number cannot be negative");
+            throw new BadRequestException(ERR_BAD_REQUEST,"Page number cannot be negative");
         }
 
         pageable.getSort().forEach(order -> {
             if (!ALLOWED_SORT_FIELDS.contains(order.getProperty())) {
-                throw new BadRequestException("USR_400","Sorting by '" + order.getProperty() + "' is not allowed");
+                throw new BadRequestException(ERR_BAD_REQUEST,"Sorting by '" + order.getProperty() + "' is not allowed");
             }
         });
 
@@ -61,20 +61,18 @@ public class UserService {
         return repository.findAll(spec,pageable);
     }
 
-
-
     /**
      * Retrieves a user by its ID.
      *
      * @param id the ID of the user
      * @return an Optional containing the User if found, otherwise empty
      */
-    public Optional<User> findById(Long id) { 
-        if (id == null) {
-            throw new BadRequestException("USR_400", "ID cannot be null");
-        }
+    @SuppressWarnings("null")
+    public User findById(Long id) { 
+        validateId(id);
 
-        return repository.findById(id); 
+        return repository.findById(id).orElseThrow(
+            () -> new NotFoundException( ERR_NOT_FOUND, "User with ID " + id + " does not exist" ));
     } 
 
     /**
@@ -85,7 +83,7 @@ public class UserService {
      */
     public Optional<User> findByUsername(String username) { 
         if (username == null) {
-            throw new BadRequestException("USR_400", "Username cannot be null");
+            throw new BadRequestException(ERR_BAD_REQUEST, "Username cannot be null");
         }
         return repository.findByUsername(username);
     } 
@@ -98,7 +96,7 @@ public class UserService {
      */
     public User save(User user) {
         if (repository.existsByEmail(user.getEmail())) {
-            throw new ConflictException( "USR_409", "Email already exists: " + user.getEmail() );
+            throw new ConflictException( ERR_CONFLICT, "Email already exists");
         }
         return repository.save(user);
     }
@@ -108,13 +106,12 @@ public class UserService {
      *
      * @param id the ID of the user to delete
      */
+    @SuppressWarnings("null")
     public void delete(Long id) { 
-        if (id == null) {
-            throw new BadRequestException("USR_400", "ID cannot be null");
-        }
+        validateId(id);
 
         if (!repository.existsById(id)) {
-            throw new NotFoundException( "USR_404", "User with ID " + id + " does not exist" );
+            throw new NotFoundException( ERR_NOT_FOUND, "User with ID " + id + " does not exist" );
         }
         repository.deleteById(id); 
     } 
@@ -127,18 +124,28 @@ public class UserService {
      * @return the updated User entity
      */
     public User update(Long id, User updatedUser) {
-        if (id == null) {
-            throw new BadRequestException("USR_400", "ID cannot be null");
-        }
+        validateId(id);
 
+        @SuppressWarnings("null")
         User existing = repository.findById(id) 
-        .orElseThrow(() -> new NotFoundException( "USR_404", "User with ID " + id + " does not exist" )); 
+        .orElseThrow(() -> new NotFoundException( ERR_NOT_FOUND, "User with ID " + id + " does not exist" )); 
         if (!existing.getEmail().equals(updatedUser.getEmail()) && repository.existsByEmail(updatedUser.getEmail())) { 
-            throw new ConflictException( "USR_409", "Email already exists: " + updatedUser.getEmail() ); 
+            throw new ConflictException( ERR_CONFLICT, "Email already exists" ); 
         }
 
         existing.setUsername(updatedUser.getUsername());
         existing.setEmail(updatedUser.getEmail());
         return repository.save(existing);
+    }
+
+    /**
+     * validate that the id not null
+     * 
+     * @param id the ID of the user to validate
+     */
+    private void validateId(Long id) {
+        if (id == null) {
+            throw new BadRequestException(ERR_BAD_REQUEST, "ID cannot be null");
+        }
     }
 }

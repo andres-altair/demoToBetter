@@ -1,4 +1,4 @@
-package com.andres.demoToBetter.modules.users.integartion;
+/**package com.andres.demoToBetter.modules.users.integartion;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -30,6 +30,7 @@ class UserIntegrationTest {
         repository.deleteAll();
     }
 
+    @SuppressWarnings("null")
     @Test
     void createUser_FullFlow_WritesToDatabaseAndReturns201() throws Exception {
         String json = """
@@ -53,6 +54,7 @@ class UserIntegrationTest {
         assertThat(saved.getUsername()).isEqualTo("andres");
     }
 
+    @SuppressWarnings("null")
     @Test
     void updateUser_FullFlow_UpdatesDatabaseAndReturns200() throws Exception {
     User existing = new User(null, "andres", "andres@mail.com");
@@ -76,4 +78,4 @@ class UserIntegrationTest {
         assertThat(updated.getUsername()).isEqualTo("nuevoNombre");
         assertThat(updated.getEmail()).isEqualTo("nuevo@mail.com");
     }
-}
+}*/

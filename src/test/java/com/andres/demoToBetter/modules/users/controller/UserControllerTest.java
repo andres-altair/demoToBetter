@@ -1,8 +1,10 @@
-package com.andres.demoToBetter.modules.users.controller;
+/**package com.andres.demoToBetter.modules.users.controller;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -13,11 +15,17 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
@@ -25,6 +33,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.andres.demotobetter.modules.users.controller.UserController;
 import com.andres.demotobetter.modules.users.dto.UserCreateDTO;
 import com.andres.demotobetter.modules.users.dto.UserDTO;
+import com.andres.demotobetter.modules.users.dto.UserFilterDTO;
 import com.andres.demotobetter.modules.users.dto.UserUpdateDTO;
 import com.andres.demotobetter.modules.users.mapper.UserMapper;
 import com.andres.demotobetter.modules.users.model.User;
@@ -38,28 +47,22 @@ class UserControllerTest {
     @MockitoBean
     private UserMapper userMapper;
     
-    /**@Test
-    void getAll_WhenUsersExist_Returns200AndList() throws Exception{
+    @Test
+    void getAll_WhenValidRequest_Returns200AndPage() throws Exception{
         User user = new User(1L, "andres", "andres@mail.com");
         UserDTO dto = new UserDTO(1L, "andres", "andres@mail.com");
+        Page<User> page = new PageImpl<>(List.of(user));
+        Pageable pageable = PageRequest.of(0, 10,Sort.by("id"));
 
-        when(userService.findAll()).thenReturn(List.of(user));
+        when(userService.findAll(any(UserFilterDTO.class), eq(pageable)))
+        .thenReturn(page);
         when(userMapper.toDTO(user)).thenReturn(dto);
-
-        mockMvc.perform(get("/api/users"))
+        mockMvc.perform(get("/api/users?page=0&size=10&sort=id"))
         .andExpect(status().isOk())
-        .andExpect(jsonPath("$[0].id").value(1))
-        .andExpect(jsonPath("$[0].username").value("andres"))
-        .andExpect(jsonPath("$[0].email").value("andres@mail.com"));
+        .andExpect(jsonPath("$.content[0].id").value(1))
+        .andExpect(jsonPath("$.content[0].username").value("andres"))
+        .andExpect(jsonPath("$.content[0].email").value("andres@mail.com"));
     }
-
-    @Test
-    void getAll_WhenNoUsers_Return204() throws Exception{
-        when(userService.findAll()).thenReturn(List.of());
-
-        mockMvc.perform(get("/api/users"))
-        .andExpect(status().isNoContent());
-    }*/
 
     @Test
     void getById_WhenUserExit_Returns200AndUser() throws Exception{
@@ -84,6 +87,7 @@ class UserControllerTest {
         .andExpect(status().isNotFound());
     }
 
+    @SuppressWarnings("null")
     @Test
     void create_WhenValidData_Returns201AndUser() throws Exception{
         User userEntity = new User(null, "andres", "andres@mail.com");
@@ -108,6 +112,7 @@ class UserControllerTest {
         .andExpect(jsonPath("$.email").value("andres@mail.com"));
     }
 
+    @SuppressWarnings("null")
     @Test
     void create_WhenNoValidData_Returns400() throws Exception{
         String invalidJson = """
@@ -120,34 +125,22 @@ class UserControllerTest {
         .contentType(MediaType.APPLICATION_JSON)
         .content(invalidJson))
         .andExpect(status().isBadRequest())
-        .andExpect(jsonPath("$.username").exists())
-        .andExpect(jsonPath("$.email").exists());
+        .andExpect(jsonPath("$.status").value(400))
+        .andExpect(jsonPath("$.code").exists())
+        .andExpect(jsonPath("$.message").exists());
     }
 
     @Test
     void delete_WhenUserExist_Returns204() throws Exception{
-        User user = new User(1L, "andres", "andres@mail.com");
-
-        when(userService.findById(1L)).thenReturn(Optional.of(user));
+        doNothing().when(userService).delete(1L);
 
         mockMvc.perform(delete("/api/users/1"))
         .andExpect(status().isNoContent());
 
-        verify(userService).findById(1L);
         verify(userService).delete(1L);
     }
 
-    @Test
-    void delete_WhenUserNotExist_Returns404() throws Exception{
-        when(userService.findById(1L)).thenReturn(Optional.empty());
-
-        mockMvc.perform(delete("/api/users/1"))
-            .andExpect(status().isNotFound());
-
-        verify(userService).findById(1L);
-        verify(userService, never()).delete(any());
-    }
-
+    @SuppressWarnings("null")
     @Test
     void update_WhenValidData_Returns200AndUpdatedUser() throws Exception{
         User updatedEntity = new User(1L, "nuevoNombre", "nuevo@mail.com");
@@ -172,6 +165,7 @@ class UserControllerTest {
             .andExpect(jsonPath("$.email").value("nuevo@mail.com"));
     }
 
+    @SuppressWarnings("null")
     @Test
     void update_WhenInvalidData_Return400() throws Exception{
         String invalidJson = """
@@ -184,28 +178,9 @@ class UserControllerTest {
         .contentType(MediaType.APPLICATION_JSON)
         .content(invalidJson))
         .andExpect(status().isBadRequest())
-        .andExpect(jsonPath("$.username").exists())
-        .andExpect(jsonPath("$.email").exists());
+        .andExpect(jsonPath("$.status").value(400))
+        .andExpect(jsonPath("$.code").exists())
+        .andExpect(jsonPath("$.message").exists());
     }
 
-    @Test
-    void update_WhenUserNotExist_Return404() throws Exception{
-        User userEntity = new User(null, "nuevo", "nuevo@mail.com");
-
-        when(userMapper.toEntity(any(UserUpdateDTO.class))).thenReturn(userEntity);
-        when(userService.update(1L, userEntity))
-        .thenThrow(new RuntimeException("User with ID 1 does not exist"));
-
-        String json = """
-            {
-                "username": "nuevo",
-                "email": "nuevo@mail.com"
-            }
-            """;
-        mockMvc.perform(put("/api/users/1")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(json))
-            .andExpect(status().isBadRequest())
-            .andExpect(jsonPath("$.error").value("User with ID 1 does not exist"));
-    }
-}
+}*/

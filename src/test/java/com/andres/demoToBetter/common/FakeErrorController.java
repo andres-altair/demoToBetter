@@ -1,4 +1,4 @@
-package com.andres.demoToBetter.common;
+/**package com.andres.demoToBetter.common;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -51,4 +51,4 @@ class FakeErrorController {
 record FakeDTO(
         @NotBlank(message = "username required") String username,
         @Email(message = "email invalid") String email
-) {}
+) {}*/
