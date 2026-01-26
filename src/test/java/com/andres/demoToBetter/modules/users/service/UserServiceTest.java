@@ -24,6 +24,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
@@ -252,6 +253,22 @@ class UserServiceTest {
         verify(repository).findById(1L);
         verify(repository).existsByEmail("otro@mail.com");
         verify(repository,never()).save(any());
+        verifyNoMoreInteractions(repository);
+    }
+
+    @Test
+    void update_WhenEmailNotChanged_ShouldNotCheckExistsByEmail() {
+        User existing = new User(1L, "andres", "andres@mail.com");
+        User updated = new User(null, "nuevoNombre", "andres@mail.com");
+
+        when(repository.findById(1L)).thenReturn(Optional.of(existing));
+        when(repository.save(existing)).thenReturn(existing);
+
+        service.update(1L, updated);
+
+        verify(repository).findById(1L);
+        verify(repository, never()).existsByEmail(anyString()); 
+        verify(repository).save(existing);
         verifyNoMoreInteractions(repository);
     }
 

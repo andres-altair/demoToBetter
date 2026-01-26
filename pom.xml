@@ -96,6 +96,37 @@
 	<build>
 		<plugins>
 
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>0.8.12</version>
+				<configuration>
+					<excludes>
+						<exclude>**/controller/**</exclude>
+						<exclude>**/handler/**</exclude>
+						<exclude>**/exception/**</exclude>
+						<exclude>**/dto/**</exclude>
+						<exclude>**/mapper/**</exclude>
+						<exclude>**/config/**</exclude>
+					</excludes>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>report</id>
+						<phase>test</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+
 			<!-- Compiler plugin: necesario para MapStruct + Lombok + Java 21 -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -108,6 +139,7 @@
 						<path>
 							<groupId>org.projectlombok</groupId>
 							<artifactId>lombok</artifactId>
+							<version>1.18.32</version>
 						</path>
 						<path>
 							<groupId>org.mapstruct</groupId>
