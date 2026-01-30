@@ -1,6 +1,5 @@
 package com.andres.demotobetter.modules.users.dto;
 
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -12,11 +11,12 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserUpdateDTO {
-
-    @NotBlank(message = "Username is required")
-    private String username;
-    @Email(message = "Email must be valid")
-    @NotBlank(message = "Email is required")
-    private String email;
+public class UserProfileUpdateDTO {
+    @NotBlank(message = "firstName is required") 
+    private String firstName; 
+    @NotBlank(message = "lastName is required") 
+    private String lastName;
+    @NotBlank(message = "phone is required")
+    private String phone; 
+    private String avatarUrl;
 }

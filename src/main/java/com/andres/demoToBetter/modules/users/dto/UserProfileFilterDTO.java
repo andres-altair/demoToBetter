@@ -8,7 +8,8 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class UserFilterDTO {
-    private String username;
-    private String email;
+public class UserProfileFilterDTO {
+    private String firstName; 
+    private String lastName;
+    private String phone; 
 }

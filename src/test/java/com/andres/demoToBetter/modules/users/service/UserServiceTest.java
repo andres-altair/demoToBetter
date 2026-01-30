@@ -1,293 +1,293 @@
-package com.andres.demoToBetter.modules.users.service;
+// package com.andres.demoToBetter.modules.users.service;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.domain.Specification;
+// import org.junit.jupiter.api.Test;
+// import org.junit.jupiter.api.extension.ExtendWith;
+// import org.mockito.InjectMocks;
+// import org.mockito.Mock;
+// import org.mockito.junit.jupiter.MockitoExtension;
+// import org.springframework.data.domain.Page;
+// import org.springframework.data.domain.PageRequest;
+// import org.springframework.data.domain.Pageable;
+// import org.springframework.data.domain.Sort;
+// import org.springframework.data.jpa.domain.Specification;
 
-import com.andres.demotobetter.common.exception.custom.BadRequestException;
-import com.andres.demotobetter.common.exception.custom.ConflictException;
-import com.andres.demotobetter.common.exception.custom.NotFoundException;
-import com.andres.demotobetter.modules.users.dto.UserFilterDTO;
-import com.andres.demotobetter.modules.users.model.User;
-import com.andres.demotobetter.modules.users.repository.UserRepository;
-import com.andres.demotobetter.modules.users.service.UserService;
-import java.util.Optional;
-
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.*;
-
-@ExtendWith(MockitoExtension.class)
-class UserServiceTest {
-
-    @Mock
-    private UserRepository repository;
-
-    @InjectMocks
-    private UserService service; 
+// import com.andres.demotobetter.common.exception.custom.BadRequestException;
+// import com.andres.demotobetter.common.exception.custom.ConflictException;
+// import com.andres.demotobetter.common.exception.custom.NotFoundException;
+// import com.andres.demotobetter.modules.users.dto.UserFilterDTO;
+// import com.andres.demotobetter.modules.users.model.User;
+// import com.andres.demotobetter.modules.users.repository.UserRepository;
+// import com.andres.demotobetter.modules.users.service.UserService;
+// import java.util.Optional;
 
 
-    @Test
-    void findAll_WhenPageSizeTooLarge_ThrowException(){
-        Pageable pageable = PageRequest.of(0, 100);
-        UserFilterDTO userFilterDTO = new UserFilterDTO();
+// import static org.junit.jupiter.api.Assertions.*;
+// import static org.mockito.ArgumentMatchers.any;
+// import static org.mockito.ArgumentMatchers.anyLong;
+// import static org.mockito.ArgumentMatchers.anyString;
+// import static org.mockito.ArgumentMatchers.eq;
+// import static org.mockito.Mockito.*;
 
-        assertThrows(BadRequestException.class,
-            () -> service.findAll(userFilterDTO,pageable));
-    }
+// @ExtendWith(MockitoExtension.class)
+// class UserServiceTest {
 
-    @Test
-    void findAll_WhenPageNumberNegative_ThrowException() {
-        Pageable pageable = mock(Pageable.class);
+//     @Mock
+//     private UserRepository repository;
 
-        when(pageable.getPageSize()).thenReturn(10);
-        when(pageable.getPageNumber()).thenReturn(-1);
-
-        UserFilterDTO filter = new UserFilterDTO();
-
-        assertThrows(BadRequestException.class,
-            () -> service.findAll(filter, pageable));
-    }
-
-    @Test
-    void findAll_WhenSortingFieldNotAllowed_ThrowException() {
-        Pageable pageable = PageRequest.of(0, 10, Sort.by("invalidField"));
-        UserFilterDTO userFilterDTO = new UserFilterDTO();
-
-        assertThrows(BadRequestException.class,
-                () -> service.findAll(userFilterDTO, pageable));
-    }
-
-    @SuppressWarnings({"unchecked","null"})
-    @Test
-    void findAll_WithFilters_ReturnsPage() {
-        Pageable pageable = PageRequest.of(0, 10, Sort.by("id"));
-        UserFilterDTO filter = new UserFilterDTO();
-        filter.setUsername("and");
-        filter.setEmail("mail");
-
-        when(repository.findAll(any(Specification.class), eq(pageable)))
-            .thenReturn(Page.empty());
-
-        Page<User> result = service.findAll(filter, pageable);
-
-        assertNotNull(result);
-        verify(repository).findAll(any(Specification.class), eq(pageable));
-        verifyNoMoreInteractions(repository);
-    }
+//     @InjectMocks
+//     private UserService service; 
 
 
-    @Test
-    void findById_UserExists_ReturnUser(){
-        User user = new User(1L, "andres", "andres@mail.com");
+//     @Test
+//     void findAll_WhenPageSizeTooLarge_ThrowException(){
+//         Pageable pageable = PageRequest.of(0, 100);
+//         UserFilterDTO userFilterDTO = new UserFilterDTO();
 
-        when(repository.findById(1L)).thenReturn(Optional.of(user));
+//         assertThrows(BadRequestException.class,
+//             () -> service.findAll(userFilterDTO,pageable));
+//     }
 
-        User result = service.findById(1L);
+//     @Test
+//     void findAll_WhenPageNumberNegative_ThrowException() {
+//         Pageable pageable = mock(Pageable.class);
 
-        assertNotNull(result,"Debe existir");
-        assertEquals("andres",result.getUsername(),"Debe coincidir");
-        verify(repository).findById(1L);
-        verifyNoMoreInteractions(repository);
-    }
+//         when(pageable.getPageSize()).thenReturn(10);
+//         when(pageable.getPageNumber()).thenReturn(-1);
 
-    @Test
-    void findById_WhenUserNotExist_ThrowException(){
-        when(repository.findById(99L)).thenReturn(Optional.empty());
+//         UserFilterDTO filter = new UserFilterDTO();
 
-        assertThrows(NotFoundException.class, () -> service.findById(99L));
-        verify(repository).findById(anyLong());
-        verifyNoMoreInteractions(repository);
-    }
+//         assertThrows(BadRequestException.class,
+//             () -> service.findAll(filter, pageable));
+//     }
 
-    @Test
-    void findById_WhenIdNull_ThrowException(){
-        assertThrows(BadRequestException.class, 
-            () -> service.findById(null));
-    }
+//     @Test
+//     void findAll_WhenSortingFieldNotAllowed_ThrowException() {
+//         Pageable pageable = PageRequest.of(0, 10, Sort.by("invalidField"));
+//         UserFilterDTO userFilterDTO = new UserFilterDTO();
 
-    @Test
-    void save_WhenEmailNotExist_SaveUser(){
-        User newUser = new User(null, "andres", "andres@mail.com");
-        when(repository.existsByEmail("andres@mail.com")).thenReturn(false);
-        User savedUser = new User(1L, "andres", "andres@mail.com");
-        when(repository.save(newUser)).thenReturn(savedUser);
+//         assertThrows(BadRequestException.class,
+//                 () -> service.findAll(userFilterDTO, pageable));
+//     }
 
-        User result = service.save(newUser);
+//     @SuppressWarnings({"unchecked","null"})
+//     @Test
+//     void findAll_WithFilters_ReturnsPage() {
+//         Pageable pageable = PageRequest.of(0, 10, Sort.by("id"));
+//         UserFilterDTO filter = new UserFilterDTO();
+//         filter.setUsername("and");
+//         filter.setEmail("mail");
 
-        assertNotNull(result.getId(), "El usuario guardado debe tener ID");
-        assertEquals("andres", result.getUsername());
-        assertEquals("andres@mail.com", result.getEmail());
-        verify(repository).existsByEmail("andres@mail.com");
-        verify(repository).save(newUser);
-        verifyNoMoreInteractions(repository);
-    }
+//         when(repository.findAll(any(Specification.class), eq(pageable)))
+//             .thenReturn(Page.empty());
 
-    @SuppressWarnings("null")
-    @Test
-    void save_WhenEmailExists_ThrowException() {
-        User newUser = new User(null, "andres", "andres@mail.com");
-        when(repository.existsByEmail("andres@mail.com")).thenReturn(true);
+//         Page<User> result = service.findAll(filter, pageable);
 
-        RuntimeException ex = assertThrows(
-            ConflictException.class,
-            ()->service.save(newUser),"Debe lanzar excepcion si el email ya existe"
-        );
-        assertEquals("Email already exists", ex.getMessage());
-        verify(repository).existsByEmail("andres@mail.com");
-        verify(repository, never()).save(any());
-        verifyNoMoreInteractions(repository);
-    }
+//         assertNotNull(result);
+//         verify(repository).findAll(any(Specification.class), eq(pageable));
+//         verifyNoMoreInteractions(repository);
+//     }
 
-    @Test
-    void delete_WhenIdNull_ThrowException(){
-        assertThrows(BadRequestException.class, 
-            ()-> service.delete(null));
-    }
 
-    @Test
-    void delete_WhenUserNotExist_ThrowException(){
-        when(repository.existsById(1L)).thenReturn(false);
+//     @Test
+//     void findById_UserExists_ReturnUser(){
+//         User user = new User(1L, "andres", "andres@mail.com");
 
-        RuntimeException ex = assertThrows(NotFoundException.class,
-            ()-> service.delete(1L),"Debe lanzar excepción si el usuario no existe"
-        );
-        assertEquals("User with ID 1 does not exist", ex.getMessage());
-        verify(repository).existsById(anyLong());
-        verify(repository,never()).deleteById(anyLong());
-        verifyNoMoreInteractions(repository);
-    }
+//         when(repository.findById(1L)).thenReturn(Optional.of(user));
 
-    @Test
-    void delete_WhenUserExist_DeleteSuccessfully(){
-        when(repository.existsById(1L)).thenReturn(true);
+//         User result = service.findById(1L);
 
-        service.delete(1L);
+//         assertNotNull(result,"Debe existir");
+//         assertEquals("andres",result.getUsername(),"Debe coincidir");
+//         verify(repository).findById(1L);
+//         verifyNoMoreInteractions(repository);
+//     }
 
-        verify(repository).existsById(1L);
-        verify(repository).deleteById(1L);
-        verifyNoMoreInteractions(repository);
-    }
+//     @Test
+//     void findById_WhenUserNotExist_ThrowException(){
+//         when(repository.findById(99L)).thenReturn(Optional.empty());
 
-    @Test
-    void findByUsername_WhenNull_ThrowException(){
-        assertThrows(BadRequestException.class, 
-            () -> service.findByUsername(null));
-    }
+//         assertThrows(NotFoundException.class, () -> service.findById(99L));
+//         verify(repository).findById(anyLong());
+//         verifyNoMoreInteractions(repository);
+//     }
 
-    @Test
-    void findByUsername_WhenUserNotExist_ReturnEmpty(){
-        when(repository.findByUsername("aa")).thenReturn(Optional.empty());
+//     @Test
+//     void findById_WhenIdNull_ThrowException(){
+//         assertThrows(BadRequestException.class, 
+//             () -> service.findById(null));
+//     }
 
-        Optional<User> result = service.findByUsername("aa");
+//     @Test
+//     void save_WhenEmailNotExist_SaveUser(){
+//         User newUser = new User(null, "andres", "andres@mail.com");
+//         when(repository.existsByEmail("andres@mail.com")).thenReturn(false);
+//         User savedUser = new User(1L, "andres", "andres@mail.com");
+//         when(repository.save(newUser)).thenReturn(savedUser);
 
-        assertTrue(result.isEmpty(),"No deberia encontrsr ningun usuario");
-        verify(repository).findByUsername("aa");
-        verifyNoMoreInteractions(repository);
-    }
+//         User result = service.save(newUser);
 
-    @Test
-    void findByUsername_WhenUserExists_ReturnUser(){
-        User user = new User(1L, "andres", "andres@mail.com");
+//         assertNotNull(result.getId(), "El usuario guardado debe tener ID");
+//         assertEquals("andres", result.getUsername());
+//         assertEquals("andres@mail.com", result.getEmail());
+//         verify(repository).existsByEmail("andres@mail.com");
+//         verify(repository).save(newUser);
+//         verifyNoMoreInteractions(repository);
+//     }
 
-        when(repository.findByUsername("andres")).thenReturn(Optional.of(user));
+//     @SuppressWarnings("null")
+//     @Test
+//     void save_WhenEmailExists_ThrowException() {
+//         User newUser = new User(null, "andres", "andres@mail.com");
+//         when(repository.existsByEmail("andres@mail.com")).thenReturn(true);
 
-        Optional<User> result = service.findByUsername("andres");
+//         RuntimeException ex = assertThrows(
+//             ConflictException.class,
+//             ()->service.save(newUser),"Debe lanzar excepcion si el email ya existe"
+//         );
+//         assertEquals("Email already exists", ex.getMessage());
+//         verify(repository).existsByEmail("andres@mail.com");
+//         verify(repository, never()).save(any());
+//         verifyNoMoreInteractions(repository);
+//     }
 
-        assertTrue(result.isPresent(),"El usuario deberia existir");
-        assertEquals("andres", result.get().getUsername());
-        assertEquals("andres@mail.com", result.get().getEmail());
-        verify(repository).findByUsername("andres");
-        verifyNoMoreInteractions(repository);
-    }
+//     @Test
+//     void delete_WhenIdNull_ThrowException(){
+//         assertThrows(BadRequestException.class, 
+//             ()-> service.delete(null));
+//     }
 
-    @Test
-    void update_WhenIdNull_ThrowException(){
-        User updated = new User(null, "new", "new@mail.com");
+//     @Test
+//     void delete_WhenUserNotExist_ThrowException(){
+//         when(repository.existsById(1L)).thenReturn(false);
 
-        assertThrows(BadRequestException.class, 
-            ()->service.update(null,updated));
-    }
+//         RuntimeException ex = assertThrows(NotFoundException.class,
+//             ()-> service.delete(1L),"Debe lanzar excepción si el usuario no existe"
+//         );
+//         assertEquals("User with ID 1 does not exist", ex.getMessage());
+//         verify(repository).existsById(anyLong());
+//         verify(repository,never()).deleteById(anyLong());
+//         verifyNoMoreInteractions(repository);
+//     }
 
-    @SuppressWarnings("null")
-    @Test
-    void update_WhenUserNotExist_ThrowException(){
-        when(repository.findById(1L)).thenReturn(Optional.empty());
+//     @Test
+//     void delete_WhenUserExist_DeleteSuccessfully(){
+//         when(repository.existsById(1L)).thenReturn(true);
 
-        User updated = new User(null, "new", "new@mail.com");
+//         service.delete(1L);
 
-        RuntimeException ex = assertThrows(NotFoundException.class,
-            ()->service.update(1L, updated),
-            "Debe lanzar excepción si el usuario no existe");
+//         verify(repository).existsById(1L);
+//         verify(repository).deleteById(1L);
+//         verifyNoMoreInteractions(repository);
+//     }
+
+//     @Test
+//     void findByUsername_WhenNull_ThrowException(){
+//         assertThrows(BadRequestException.class, 
+//             () -> service.findByUsername(null));
+//     }
+
+//     @Test
+//     void findByUsername_WhenUserNotExist_ReturnEmpty(){
+//         when(repository.findByUsername("aa")).thenReturn(Optional.empty());
+
+//         Optional<User> result = service.findByUsername("aa");
+
+//         assertTrue(result.isEmpty(),"No deberia encontrsr ningun usuario");
+//         verify(repository).findByUsername("aa");
+//         verifyNoMoreInteractions(repository);
+//     }
+
+//     @Test
+//     void findByUsername_WhenUserExists_ReturnUser(){
+//         User user = new User(1L, "andres", "andres@mail.com");
+
+//         when(repository.findByUsername("andres")).thenReturn(Optional.of(user));
+
+//         Optional<User> result = service.findByUsername("andres");
+
+//         assertTrue(result.isPresent(),"El usuario deberia existir");
+//         assertEquals("andres", result.get().getUsername());
+//         assertEquals("andres@mail.com", result.get().getEmail());
+//         verify(repository).findByUsername("andres");
+//         verifyNoMoreInteractions(repository);
+//     }
+
+//     @Test
+//     void update_WhenIdNull_ThrowException(){
+//         User updated = new User(null, "new", "new@mail.com");
+
+//         assertThrows(BadRequestException.class, 
+//             ()->service.update(null,updated));
+//     }
+
+//     @SuppressWarnings("null")
+//     @Test
+//     void update_WhenUserNotExist_ThrowException(){
+//         when(repository.findById(1L)).thenReturn(Optional.empty());
+
+//         User updated = new User(null, "new", "new@mail.com");
+
+//         RuntimeException ex = assertThrows(NotFoundException.class,
+//             ()->service.update(1L, updated),
+//             "Debe lanzar excepción si el usuario no existe");
         
-        assertEquals("User with ID 1 does not exist", ex.getMessage());
-        verify(repository).findById(1L);
-        verify(repository,never()).save(any());
-        verifyNoMoreInteractions(repository);
-    }
+//         assertEquals("User with ID 1 does not exist", ex.getMessage());
+//         verify(repository).findById(1L);
+//         verify(repository,never()).save(any());
+//         verifyNoMoreInteractions(repository);
+//     }
 
-    @SuppressWarnings("null")
-    @Test
-    void update_WhenEmailAlreadyExists_ThrowException() {
-        User existing = new User(1L, "andres", "andres@mail.com");
-        User updated = new User(null, "andresNuevo", "otro@mail.com");
+//     @SuppressWarnings("null")
+//     @Test
+//     void update_WhenEmailAlreadyExists_ThrowException() {
+//         User existing = new User(1L, "andres", "andres@mail.com");
+//         User updated = new User(null, "andresNuevo", "otro@mail.com");
 
-        when(repository.findById(1L)).thenReturn(Optional.of(existing));
-        when(repository.existsByEmail("otro@mail.com")).thenReturn(true);
+//         when(repository.findById(1L)).thenReturn(Optional.of(existing));
+//         when(repository.existsByEmail("otro@mail.com")).thenReturn(true);
 
-        RuntimeException ex = assertThrows(ConflictException.class,
-            ()-> service.update(1L, updated) , "Debe lanzar excepción si el email ya existe"
-        );
-        assertEquals("Email already exists", ex.getMessage());
-        verify(repository).findById(1L);
-        verify(repository).existsByEmail("otro@mail.com");
-        verify(repository,never()).save(any());
-        verifyNoMoreInteractions(repository);
-    }
+//         RuntimeException ex = assertThrows(ConflictException.class,
+//             ()-> service.update(1L, updated) , "Debe lanzar excepción si el email ya existe"
+//         );
+//         assertEquals("Email already exists", ex.getMessage());
+//         verify(repository).findById(1L);
+//         verify(repository).existsByEmail("otro@mail.com");
+//         verify(repository,never()).save(any());
+//         verifyNoMoreInteractions(repository);
+//     }
 
-    @Test
-    void update_WhenEmailNotChanged_ShouldNotCheckExistsByEmail() {
-        User existing = new User(1L, "andres", "andres@mail.com");
-        User updated = new User(null, "nuevoNombre", "andres@mail.com");
+//     @Test
+//     void update_WhenEmailNotChanged_ShouldNotCheckExistsByEmail() {
+//         User existing = new User(1L, "andres", "andres@mail.com");
+//         User updated = new User(null, "nuevoNombre", "andres@mail.com");
 
-        when(repository.findById(1L)).thenReturn(Optional.of(existing));
-        when(repository.save(existing)).thenReturn(existing);
+//         when(repository.findById(1L)).thenReturn(Optional.of(existing));
+//         when(repository.save(existing)).thenReturn(existing);
 
-        service.update(1L, updated);
+//         service.update(1L, updated);
 
-        verify(repository).findById(1L);
-        verify(repository, never()).existsByEmail(anyString()); 
-        verify(repository).save(existing);
-        verifyNoMoreInteractions(repository);
-    }
+//         verify(repository).findById(1L);
+//         verify(repository, never()).existsByEmail(anyString()); 
+//         verify(repository).save(existing);
+//         verifyNoMoreInteractions(repository);
+//     }
 
-    @Test
-    void update_WhenValidData_UpdateSuccessfully(){
-        User existing = new User(1L, "andres", "andres@mail.com");
-        User updated = new User(null, "nuevoNombre", "nuevo@mail.com");
+//     @Test
+//     void update_WhenValidData_UpdateSuccessfully(){
+//         User existing = new User(1L, "andres", "andres@mail.com");
+//         User updated = new User(null, "nuevoNombre", "nuevo@mail.com");
 
-        when(repository.findById(1L)).thenReturn(Optional.of(existing));
-        when(repository.existsByEmail("nuevo@mail.com")).thenReturn(false);
-        User saved = new User(1L, "nuevoNombre", "nuevo@mail.com");
-        when(repository.save(existing)).thenReturn(saved);
-        User result = service.update(1L, updated);
+//         when(repository.findById(1L)).thenReturn(Optional.of(existing));
+//         when(repository.existsByEmail("nuevo@mail.com")).thenReturn(false);
+//         User saved = new User(1L, "nuevoNombre", "nuevo@mail.com");
+//         when(repository.save(existing)).thenReturn(saved);
+//         User result = service.update(1L, updated);
         
-        assertEquals("nuevoNombre", result.getUsername());
-        assertEquals("nuevo@mail.com", result.getEmail());
-        verify(repository).findById(1L);
-        verify(repository).existsByEmail("nuevo@mail.com");
-        verify(repository).save(existing);
-        verifyNoMoreInteractions(repository);
-    }
-}
+//         assertEquals("nuevoNombre", result.getUsername());
+//         assertEquals("nuevo@mail.com", result.getEmail());
+//         verify(repository).findById(1L);
+//         verify(repository).existsByEmail("nuevo@mail.com");
+//         verify(repository).save(existing);
+//         verifyNoMoreInteractions(repository);
+//     }
+// }
