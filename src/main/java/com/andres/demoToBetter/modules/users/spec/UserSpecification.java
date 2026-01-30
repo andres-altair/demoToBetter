@@ -2,34 +2,43 @@ package com.andres.demotobetter.modules.users.spec;
 
 import org.springframework.data.jpa.domain.Specification;
 
-import com.andres.demotobetter.modules.users.model.User;
+import com.andres.demotobetter.modules.users.model.UserProfile;
 
 /**
- * Utility class containing reusable Specifications for filtering User entities.
+ * Utility class providing reusable Specifications for filtering UserProfile entities.
  * @author andres
  */
 public class UserSpecification {
 
     private UserSpecification() { throw new UnsupportedOperationException("Utility class"); }
     /**
-     * Creates a Specification that filters users whose username contains
-     * 
-     * @param username partial text to search within the username field
-     * @return a Specification for filtering by username, or null if not applicable
+     * Returns a Specification that filters by firstName containing the given text.
+     *
+     * @param firstName partial value to match
      */
-    public static Specification<User> usernameContains(String username){
-        return (root, query, cb)-> (username == null || username.isBlank()) ? null :
-            cb.like(cb.lower(root.get("username")),"%" + username.toLowerCase()+ "%");
+    public static Specification<UserProfile> firstNameContains(String firstName){
+        return (root, query, cb)-> (firstName == null || firstName.isBlank()) ? null :
+            cb.like(cb.lower(root.get("firstName")),"%" + firstName.toLowerCase()+ "%");
     }
 
     /**
-     * Creates a Specification that filters users whose email contains
-     * 
-     * @param email partial text to search within the email field
-     * @return a Specification for filtering by email, or null if not applicable
+     * Returns a Specification that filters by lastName containing the given text.
+     *
+     * @param lastName partial value to match
      */
-    public static Specification<User> emailContains (String email){
-        return (root, query, cb) -> (email == null || email.isBlank()) ? null : 
-            cb.like(cb.lower(root.get("email")), "%" + email.toLowerCase() + "%");
+    public static Specification<UserProfile> lastNameContains (String lastName){
+        return (root, query, cb) -> (lastName == null || lastName.isBlank()) ? null : 
+            cb.like(cb.lower(root.get("lastName")), "%" + lastName.toLowerCase() + "%");
+    }
+
+
+    /**
+     * Returns a Specification that filters by phone containing the given text.
+     *
+     * @param phone partial value to match
+     */
+    public static Specification<UserProfile> phoneContains (String phone){
+        return (root, query, cb) -> (phone == null || phone.isBlank()) ? null : 
+            cb.like(cb.lower(root.get("phone")), "%" + phone.toLowerCase() + "%");
     }
 }

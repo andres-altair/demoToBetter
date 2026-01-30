@@ -2,13 +2,17 @@ package com.andres.demotobetter.common.exception.dto;
 
 import java.time.LocalDateTime;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 /**
  * Data Transfer Object representing a standardized error response.
  * @author anddres
  */
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Builder
 public class ErrorDTO {
     private String code;        
