@@ -1,4 +1,4 @@
-package com.andres.demotobetter.modules.security.model;
+package com.andres.demotobetter.modules.security.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

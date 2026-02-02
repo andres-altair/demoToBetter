@@ -10,7 +10,7 @@ import com.andres.demotobetter.common.exception.custom.NotFoundException;
 import com.andres.demotobetter.modules.users.dto.UserProfileFilterDTO;
 import com.andres.demotobetter.modules.users.model.UserProfile;
 import com.andres.demotobetter.modules.users.repository.UserProfileRepository;
-import com.andres.demotobetter.modules.users.spec.UserSpecification;
+import com.andres.demotobetter.modules.users.spec.UserProfileSpecification;
 
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
@@ -50,9 +50,9 @@ public class UserProfileService {
         });
 
         Specification<UserProfile> spec = Specification.allOf(
-        UserSpecification.firstNameContains(filter.getFirstName()),
-        UserSpecification.lastNameContains(filter.getLastName()),
-        UserSpecification.phoneContains(filter.getPhone()));
+        UserProfileSpecification.firstNameContains(filter.getFirstName()),
+        UserProfileSpecification.lastNameContains(filter.getLastName()),
+        UserProfileSpecification.phoneContains(filter.getPhone()));
         
         return repository.findAll(spec,pageable);
     }

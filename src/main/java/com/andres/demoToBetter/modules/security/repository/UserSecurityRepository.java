@@ -1,7 +1,12 @@
 package com.andres.demotobetter.modules.security.repository;
 
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.andres.demotobetter.modules.security.model.UserSecurity;
+import com.andres.demotobetter.modules.security.entity.UserSecurity;
 
-public interface UserSecurityRepository extends JpaRepository<UserSecurity, Long> {}
+public interface UserSecurityRepository extends JpaRepository<UserSecurity, Long> {
+
+    Optional<UserSecurity> findByEmail(String email);
+}

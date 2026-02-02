@@ -25,3 +25,7 @@ spring:
       password: 1234
       roles:
       - ADMIN
+  
+jwt:
+  secret: "mySecretJWTKeyProjectDEmoTOBetter02022026"
+  expiration: 3600000

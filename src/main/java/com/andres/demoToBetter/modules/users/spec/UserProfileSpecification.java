@@ -8,9 +8,9 @@ import com.andres.demotobetter.modules.users.model.UserProfile;
  * Utility class providing reusable Specifications for filtering UserProfile entities.
  * @author andres
  */
-public class UserSpecification {
+public class UserProfileSpecification {
 
-    private UserSpecification() { throw new UnsupportedOperationException("Utility class"); }
+    private UserProfileSpecification() { throw new UnsupportedOperationException("Utility class"); }
     /**
      * Returns a Specification that filters by firstName containing the given text.
      *

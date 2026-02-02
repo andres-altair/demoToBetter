@@ -1,7 +1,7 @@
 package com.andres.demotobetter.modules.users.model;
 
 
-import com.andres.demotobetter.modules.security.model.UserSecurity;
+import com.andres.demotobetter.modules.security.entity.UserSecurity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
