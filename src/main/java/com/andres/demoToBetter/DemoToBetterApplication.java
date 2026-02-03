@@ -10,7 +10,7 @@ public class DemoToBetterApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(DemoToBetterApplication.class, args);
 
-		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(); String hash = encoder.encode("passs"); System.out.println(hash);
+		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(); 
+		System.out.println(encoder.encode("passs"));
 	}
-
 }

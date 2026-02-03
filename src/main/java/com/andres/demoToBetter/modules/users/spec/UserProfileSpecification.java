@@ -2,7 +2,7 @@ package com.andres.demotobetter.modules.users.spec;
 
 import org.springframework.data.jpa.domain.Specification;
 
-import com.andres.demotobetter.modules.users.model.UserProfile;
+import com.andres.demotobetter.modules.users.entity.UserProfile;
 
 /**
  * Utility class providing reusable Specifications for filtering UserProfile entities.
