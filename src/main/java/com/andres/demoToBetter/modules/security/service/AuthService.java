@@ -14,13 +14,13 @@ import lombok.RequiredArgsConstructor;
 public class AuthService {
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
-    private final CustomUserDetailsService customUserDetailsService;
+    private final UserDetailsServiceImpl userDetailsServiceImpl;
 
     public TokenDTO login(LoginDTO loginDTO) {
 
         authenticationManager
                 .authenticate(new UsernamePasswordAuthenticationToken(loginDTO.getEmail(), loginDTO.getPassword()));
-        var user = customUserDetailsService.loadUserByUsername(loginDTO.getEmail());
+        var user = userDetailsServiceImpl.loadUserByUsername(loginDTO.getEmail());
         String token = jwtService.generateToken(user);
         return new TokenDTO(token);
     }

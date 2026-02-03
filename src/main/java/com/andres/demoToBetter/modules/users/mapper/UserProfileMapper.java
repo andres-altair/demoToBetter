@@ -7,7 +7,7 @@ import org.mapstruct.MappingTarget;
 import com.andres.demotobetter.modules.users.dto.UserProfileCreateDTO;
 import com.andres.demotobetter.modules.users.dto.UserProfileDTO;
 import com.andres.demotobetter.modules.users.dto.UserProfileUpdateDTO;
-import com.andres.demotobetter.modules.users.model.UserProfile;
+import com.andres.demotobetter.modules.users.entity.UserProfile;
 
 /**
  * Utility class responsible for converting between UserProfile entities and DTOs.

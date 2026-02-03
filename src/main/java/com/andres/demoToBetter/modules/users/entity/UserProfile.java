@@ -1,4 +1,4 @@
-package com.andres.demotobetter.modules.users.model;
+package com.andres.demotobetter.modules.users.entity;
 
 
 import com.andres.demotobetter.modules.security.entity.UserSecurity;

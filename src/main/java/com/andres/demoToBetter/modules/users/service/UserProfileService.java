@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import com.andres.demotobetter.common.exception.custom.BadRequestException;
 import com.andres.demotobetter.common.exception.custom.NotFoundException;
 import com.andres.demotobetter.modules.users.dto.UserProfileFilterDTO;
-import com.andres.demotobetter.modules.users.model.UserProfile;
+import com.andres.demotobetter.modules.users.entity.UserProfile;
 import com.andres.demotobetter.modules.users.repository.UserProfileRepository;
 import com.andres.demotobetter.modules.users.spec.UserProfileSpecification;
 

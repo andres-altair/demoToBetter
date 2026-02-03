@@ -13,8 +13,8 @@ import com.andres.demotobetter.modules.users.dto.UserProfileCreateDTO;
 import com.andres.demotobetter.modules.users.dto.UserProfileDTO;
 import com.andres.demotobetter.modules.users.dto.UserProfileFilterDTO;
 import com.andres.demotobetter.modules.users.dto.UserProfileUpdateDTO;
+import com.andres.demotobetter.modules.users.entity.UserProfile;
 import com.andres.demotobetter.modules.users.mapper.UserProfileMapper;
-import com.andres.demotobetter.modules.users.model.UserProfile;
 import com.andres.demotobetter.modules.users.service.UserProfileService;
 
 import jakarta.validation.Valid;
