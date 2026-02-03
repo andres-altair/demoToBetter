@@ -3,6 +3,8 @@ package com.andres.demotobetter.common.exception.handler;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -29,25 +31,24 @@ public class GlobalExceptionHandler {
                 message,
                 "Invalid application",
                 HttpStatus.BAD_REQUEST,
-                request
-        );
+                request);
     }
 
     @ExceptionHandler(ApiException.class)
     public ResponseEntity<ErrorDTO> handleApiExceptions(ApiException ex, HttpServletRequest request) {
 
         HttpStatus status = switch (ex) {
-            case NotFoundException e   -> HttpStatus.NOT_FOUND;
+            case NotFoundException e -> HttpStatus.NOT_FOUND;
             case BadRequestException e -> HttpStatus.BAD_REQUEST;
-            case ConflictException e   -> HttpStatus.CONFLICT;
-            default                    -> HttpStatus.BAD_REQUEST;
+            case ConflictException e -> HttpStatus.CONFLICT;
+            default -> HttpStatus.BAD_REQUEST;
         };
 
         String detail = switch (ex) {
-            case NotFoundException e   -> "Resource not found";
+            case NotFoundException e -> "Resource not found";
             case BadRequestException e -> "Invalid application";
-            case ConflictException e   -> "Conflict in the operation";
-            default                    -> "Business mistake";
+            case ConflictException e -> "Conflict in the operation";
+            default -> "Business mistake";
         };
 
         return buildResponse(
@@ -55,8 +56,7 @@ public class GlobalExceptionHandler {
                 ex.getMessage(),
                 detail,
                 status,
-                request
-        );
+                request);
     }
 
     @ExceptionHandler(Exception.class)
@@ -66,8 +66,27 @@ public class GlobalExceptionHandler {
                 "Internal error",
                 ex.getMessage(),
                 HttpStatus.INTERNAL_SERVER_ERROR,
-                request
-        );
+                request);
+    }
+
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<ErrorDTO> handleAuth(AuthenticationException ex, HttpServletRequest request) {
+        return buildResponse(
+                "AUTH_401",
+                "Unauthorized",
+                ex.getMessage(),
+                HttpStatus.UNAUTHORIZED,
+                request);
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<ErrorDTO> handleAccessDenied(AccessDeniedException ex, HttpServletRequest request) {
+        return buildResponse(
+                "AUTH_403",
+                "Access denied",
+                ex.getMessage(),
+                HttpStatus.FORBIDDEN,
+                request);
     }
 
     private ResponseEntity<ErrorDTO> buildResponse(
@@ -75,8 +94,7 @@ public class GlobalExceptionHandler {
             String message,
             String detail,
             HttpStatus status,
-            HttpServletRequest request
-    ) {
+            HttpServletRequest request) {
         ErrorDTO error = ErrorDTO.builder()
                 .code(code)
                 .message(message)

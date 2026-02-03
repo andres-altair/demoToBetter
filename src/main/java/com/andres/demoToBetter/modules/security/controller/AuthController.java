@@ -24,7 +24,4 @@ public class AuthController {
         
         return authService.login(loginDTO);
     }
-    
-
-
 }
