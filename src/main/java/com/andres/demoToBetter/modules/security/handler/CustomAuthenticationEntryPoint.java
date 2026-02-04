@@ -2,6 +2,8 @@ package com.andres.demotobetter.modules.security.handler;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.NonNull;
+
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
@@ -20,9 +22,10 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
     }
 
     @Override
-    public void commence(HttpServletRequest request,
-                         HttpServletResponse response,
-                         AuthenticationException ex) {
+    public void commence(@NonNull HttpServletRequest request,
+                        @NonNull HttpServletResponse response,
+                        @NonNull AuthenticationException ex) {
         resolver.resolveException(request, response, null, ex);
     }
 }
+

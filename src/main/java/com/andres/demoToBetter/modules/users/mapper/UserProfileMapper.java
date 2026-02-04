@@ -11,7 +11,6 @@ import com.andres.demotobetter.modules.users.entity.UserProfile;
 
 /**
  * Utility class responsible for converting between UserProfile entities and DTOs.
- * 
  * @author andres
  */
 @Mapper(componentModel = "spring")

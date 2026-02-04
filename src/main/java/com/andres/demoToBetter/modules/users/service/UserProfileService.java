@@ -101,6 +101,7 @@ public class UserProfileService {
         existing.setFirstName(updatedUser.getFirstName());
         existing.setLastName(updatedUser.getLastName());
         existing.setPhone(updatedUser.getPhone());
+        existing.setAvatarUrl(updatedUser.getAvatarUrl());
         return repository.save(existing);
     }
 

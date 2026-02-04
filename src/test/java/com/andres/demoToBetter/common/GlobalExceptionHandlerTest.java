@@ -1,3 +1,4 @@
+package com.andres.demotobetter.common;
 /**package com.andres.demoToBetter.common;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
