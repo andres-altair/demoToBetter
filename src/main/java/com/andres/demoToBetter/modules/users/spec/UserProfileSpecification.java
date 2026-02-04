@@ -12,12 +12,12 @@ public class UserProfileSpecification {
 
     private UserProfileSpecification() { throw new UnsupportedOperationException("Utility class"); }
     /**
-     * Returns a Specification that filters by firstName containing the given text.
+     * Returns a Specification that filters by firstName.
      *
      * @param firstName partial value to match
      */
     public static Specification<UserProfile> firstNameContains(String firstName){
-        return (root, query, cb)-> (firstName == null || firstName.isBlank()) ? null :
+        return (root, query, cb) -> (firstName == null || firstName.isBlank()) ? null :
             cb.like(cb.lower(root.get("firstName")),"%" + firstName.toLowerCase()+ "%");
     }
 

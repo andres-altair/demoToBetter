@@ -1,4 +1,4 @@
-package com.andres.demoToBetter;
+package com.andres.demotobetter;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

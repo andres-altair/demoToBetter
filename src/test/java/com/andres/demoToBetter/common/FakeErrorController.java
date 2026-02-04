@@ -1,3 +1,4 @@
+package com.andres.demotobetter.common;
 /**package com.andres.demoToBetter.common;
 
 import org.springframework.web.bind.annotation.GetMapping;

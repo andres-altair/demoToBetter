@@ -18,8 +18,10 @@ import com.andres.demotobetter.modules.users.mapper.UserProfileMapper;
 import com.andres.demotobetter.modules.users.service.UserProfileService;
 
 import jakarta.validation.Valid;
+
 /**
  * REST controller for managing user profile resources.
+ * 
  * @author andres
  */
 @RestController
@@ -38,10 +40,10 @@ public class UseProfileController {
      */
     @GetMapping
     public ResponseEntity<Page<UserProfileDTO>> getAll(
-        UserProfileFilterDTO filter,
-        Pageable pageable) {
+            UserProfileFilterDTO filter,
+            Pageable pageable) {
         Page<UserProfileDTO> users = userService.findAll(filter, pageable)
-            .map(userMapper::toDTO);
+                .map(userMapper::toDTO);
 
         return ResponseEntity.ok(users);
     }
