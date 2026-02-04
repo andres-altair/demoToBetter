@@ -66,11 +66,10 @@ public class UseProfileController {
      */
     @PostMapping
     public ResponseEntity<UserProfileDTO> create(@Valid @RequestBody UserProfileCreateDTO dto) {
-        UserProfile user = userMapper.toEntity(dto);
-        UserProfile saved = userService.save(user);
-        UserProfileDTO response = userMapper.toDTO(saved);
+        UserProfileDTO response = userService.save(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
+
 
     /**
      * Deletes a user profile by ID.
