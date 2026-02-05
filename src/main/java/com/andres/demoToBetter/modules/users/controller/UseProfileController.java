@@ -21,7 +21,6 @@ import jakarta.validation.Valid;
 
 /**
  * REST controller for managing user profile resources.
- * 
  * @author andres
  */
 @RestController

@@ -11,6 +11,10 @@ import com.andres.demotobetter.modules.security.repository.UserSecurityRepositor
 
 import lombok.AllArgsConstructor;
 
+/**
+ * Class that implements UserSecurityService.
+ * @author andres
+ */
 @Service
 @AllArgsConstructor
 public class UserSecurityServiceImpl implements UserSecurityService {

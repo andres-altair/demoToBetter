@@ -4,6 +4,17 @@ import java.util.Set;
 
 import com.andres.demotobetter.modules.security.entity.UserSecurity;
 
+/**
+ * Defines the contract for managing user security.
+ * @author andres
+ */
 public interface UserSecurityService {
+    /**
+     * Creates a new security user.
+     * @param email
+     * @param password
+     * @param roles
+     * @return
+     */
     UserSecurity createSecurityUser(String email, String password, Set<String> roles);
 }

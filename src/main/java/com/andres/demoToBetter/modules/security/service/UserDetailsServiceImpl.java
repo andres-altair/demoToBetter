@@ -9,6 +9,10 @@ import com.andres.demotobetter.modules.security.model.UserDetailsImpl;
 import com.andres.demotobetter.modules.security.repository.UserSecurityRepository;
 
 import lombok.RequiredArgsConstructor;
+/**
+ * Class that implements UserDetailsService.
+ * @author andres
+ */
 @Service
 @RequiredArgsConstructor
 public class UserDetailsServiceImpl implements UserDetailsService {

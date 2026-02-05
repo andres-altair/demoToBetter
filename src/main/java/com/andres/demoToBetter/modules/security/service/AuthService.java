@@ -5,10 +5,14 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.stereotype.Service;
 
 import com.andres.demotobetter.modules.security.dto.LoginDTO;
-import com.andres.demotobetter.modules.security.dto.TokenDTO;
+import com.andres.demotobetter.modules.security.dto.ResponseLoginTokenDTO;
 
 import lombok.RequiredArgsConstructor;
 
+/**
+ * Class that manages the authentication process.
+ * @author andres
+ */
 @Service
 @RequiredArgsConstructor
 public class AuthService {
@@ -16,12 +20,12 @@ public class AuthService {
     private final JwtService jwtService;
     private final UserDetailsServiceImpl userDetailsServiceImpl;
 
-    public TokenDTO login(LoginDTO loginDTO) {
+    public ResponseLoginTokenDTO login(LoginDTO loginDTO) {
 
         authenticationManager
                 .authenticate(new UsernamePasswordAuthenticationToken(loginDTO.getEmail(), loginDTO.getPassword()));
         var user = userDetailsServiceImpl.loadUserByUsername(loginDTO.getEmail());
         String token = jwtService.generateToken(user);
-        return new TokenDTO(token);
+        return new ResponseLoginTokenDTO(token);
     }
 }

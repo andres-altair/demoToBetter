@@ -10,7 +10,6 @@ import java.util.Set;
 
 /**
  * Entity representing a security user in the system.
- * 
  * @author andres
  */
 @Entity

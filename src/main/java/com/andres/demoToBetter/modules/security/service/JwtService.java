@@ -11,7 +11,10 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import javax.crypto.SecretKey;
 
-
+/**
+ * Class that manages JWT tokens.
+ * @author andres
+ */
 @Service
 public class JwtService {
 

@@ -7,7 +7,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import com.andres.demotobetter.modules.security.entity.UserSecurity;
-
+/**
+ * Class that implements UserDetails.
+ * @author andres
+ */
 public class UserDetailsImpl implements UserDetails {
     private final Long id;
     private final String email;
