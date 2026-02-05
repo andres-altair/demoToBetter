@@ -13,10 +13,18 @@ import org.springframework.data.jpa.domain.Specification;
 
 import com.andres.demotobetter.common.exception.custom.BadRequestException;
 import com.andres.demotobetter.common.exception.custom.NotFoundException;
+import com.andres.demotobetter.modules.security.entity.UserSecurity;
+import com.andres.demotobetter.modules.security.repository.UserSecurityRepository;
+import com.andres.demotobetter.modules.security.service.UserSecurityService;
+import com.andres.demotobetter.modules.security.service.UserSecurityServiceImpl;
+import com.andres.demotobetter.modules.users.dto.UserProfileCreateDTO;
+import com.andres.demotobetter.modules.users.dto.UserProfileDTO;
 import com.andres.demotobetter.modules.users.dto.UserProfileFilterDTO;
 import com.andres.demotobetter.modules.users.entity.UserProfile;
+import com.andres.demotobetter.modules.users.mapper.UserProfileMapper;
 import com.andres.demotobetter.modules.users.repository.UserProfileRepository;
 import java.util.Optional;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -29,9 +37,12 @@ class UserProfileServiceTest {
 
     @Mock
     private UserProfileRepository repository;
-
+    @Mock
+    private UserProfileMapper mapper;
+    @Mock
+    private UserSecurityService userSecurityService ;
     @InjectMocks
-    private UserProfileService service;
+    private UserProfileServiceImpl service;
 
     @Test
     void findAll_WhenPageSizeTooLarge_ThrowException() {
@@ -185,5 +196,32 @@ class UserProfileServiceTest {
         verify(repository).findById(1L);
         verify(repository).save(existing);
         verifyNoMoreInteractions(repository);
+    }
+
+    @Test
+    void save_WhenValidData_SaveSuccessfully(){
+        UserProfileCreateDTO dto = new UserProfileCreateDTO(); 
+        dto.setEmail("test@example.com"); 
+        dto.setPassword("123456"); 
+        dto.setRoles(Set.of("USER"));
+        UserSecurity security = new UserSecurity(); 
+        UserProfile entity = new UserProfile(); 
+        UserProfileDTO responseDTO = new UserProfileDTO();
+
+        when(userSecurityService.createSecurityUser(dto.getEmail(), dto.getPassword(), dto.getRoles()))
+        .thenReturn(security);
+        when(mapper.toEntity(dto)).thenReturn(entity);
+        when(repository.save(entity)).thenReturn(entity);
+        when(mapper.toDTO(entity)).thenReturn(responseDTO);
+
+        UserProfileDTO result = service.save(dto);
+
+        assertEquals(responseDTO, result);
+        assertNotNull(result);
+        verify(userSecurityService).createSecurityUser( dto.getEmail(), dto.getPassword(), dto.getRoles() ); 
+        verify(mapper).toEntity(dto); 
+        verify(repository).save(entity); 
+        verify(mapper).toDTO(entity); 
+        verifyNoMoreInteractions(userSecurityService, mapper, repository); 
     }
 }
