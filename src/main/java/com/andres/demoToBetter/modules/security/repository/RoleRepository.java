@@ -6,6 +6,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.andres.demotobetter.modules.security.entity.Role;
 
+/**
+ * Repository interface for managing Role entities.
+ * @author andres
+ */
 public interface RoleRepository extends JpaRepository<Role, Long> {
     Optional<Role> findByName(String name);
 }

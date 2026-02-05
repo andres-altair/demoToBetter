@@ -24,8 +24,7 @@ import lombok.AllArgsConstructor;
 import lombok.NonNull;
 
 /**
- * Service layer responsible for handling business logic related to User.
- * 
+ * Class that implements UserProfileService.
  * @author andres
  */
 @Service
@@ -41,9 +40,6 @@ public class UserProfileServiceImpl implements UserProfileService {
     private final UserSecurityService  userSecurityService;
     private final UserProfileMapper mapper;
 
-    /**
-     * Returns a paginated list of user profiles applying dynamic filters.
-     */
     @Override
     public Page<UserProfile> findAll(UserProfileFilterDTO filter, Pageable pageable) {
 
@@ -70,9 +66,6 @@ public class UserProfileServiceImpl implements UserProfileService {
         return repository.findAll(spec, pageable);
     }
 
-    /**
-     * Retrieves a user profile by ID or throws an exception if not found.
-     */
     @Override
     @SuppressWarnings("null")
     public UserProfile findById(Long id) {
@@ -83,9 +76,9 @@ public class UserProfileServiceImpl implements UserProfileService {
     }
 
     /**
-     * Creates or updates a user profile.
-     */
-
+    * This method is transactional because it touches both the security
+    * and user profile tables.
+    */
     @Transactional
     @Override
     public UserProfileDTO save(@NonNull UserProfileCreateDTO dto) {
@@ -98,10 +91,6 @@ public class UserProfileServiceImpl implements UserProfileService {
         repository.save(profile);
         return mapper.toDTO(profile);
     }
-
-    /**
-     * Deletes a user profile by ID if it exists.
-     */
     @Override
     @SuppressWarnings("null")
     public void delete(Long id) {
@@ -113,9 +102,6 @@ public class UserProfileServiceImpl implements UserProfileService {
         repository.deleteById(id);
     }
 
-    /**
-     * Updates editable fields of an existing user profile.
-     */
     @Override
     public UserProfile update(Long id, UserProfile updatedUser) {
         validateId(id);
@@ -131,9 +117,6 @@ public class UserProfileServiceImpl implements UserProfileService {
         return repository.save(existing);
     }
 
-    /**
-     * Ensures the provided ID is not null.
-     */
     private void validateId(Long id) {
         if (id == null) {
             throw new BadRequestException(ERR_BAD_REQUEST, "ID cannot be null");

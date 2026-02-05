@@ -3,7 +3,10 @@ package com.andres.demotobetter.modules.security.dto;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
-
+/**
+ * Data Transfer Object used for logging in a user.
+ * @author andres
+ */
 @Data
 public class LoginDTO {
     @Email(message = "Email must be valid")

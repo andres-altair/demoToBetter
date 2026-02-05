@@ -14,7 +14,10 @@ import com.andres.demotobetter.common.exception.dto.ErrorDTO;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
-
+/**
+ * Class used to manage global handle exceptions.
+ * @author andres
+ */
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 

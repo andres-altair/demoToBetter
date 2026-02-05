@@ -15,7 +15,10 @@ import com.andres.demotobetter.modules.security.handler.CustomAccessDeniedHandle
 import com.andres.demotobetter.modules.security.handler.CustomAuthenticationEntryPoint;
 
 import lombok.RequiredArgsConstructor;
-
+/**
+ * Configuration class for security setup
+ * @author andres
+ */
 @Configuration
 @RequiredArgsConstructor
 public class SecurityConfig {

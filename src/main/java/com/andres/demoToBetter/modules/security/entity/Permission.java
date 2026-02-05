@@ -10,6 +10,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+/**
+ * Entity representing a permission in the system.
+ * @author andres
+ */
 @Entity
 @Table(name = "permissions")
 @Getter

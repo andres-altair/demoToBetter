@@ -10,7 +10,10 @@ import com.andres.demotobetter.modules.security.entity.Role;
 import com.andres.demotobetter.modules.security.repository.RoleRepository;
 
 import lombok.AllArgsConstructor;
-
+/**
+ * Class that implements RoleService.
+ * @author andres
+ */
 @Service
 @AllArgsConstructor
 public class RoleServiceImpl implements RoleService {

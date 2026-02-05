@@ -6,7 +6,6 @@ import org.springframework.stereotype.Repository;
 
 import com.andres.demotobetter.modules.users.entity.UserProfile;
 
-
 /**
  * Repository interface for managing UserProfile entities.
  * @author andres

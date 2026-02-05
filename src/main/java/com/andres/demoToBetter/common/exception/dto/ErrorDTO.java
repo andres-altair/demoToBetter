@@ -8,7 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 /**
  * Data Transfer Object representing a standardized error response.
- * @author anddres
+ * @author andres
  */
 @Data
 @AllArgsConstructor
