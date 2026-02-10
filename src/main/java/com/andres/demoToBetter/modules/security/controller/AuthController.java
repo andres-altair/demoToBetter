@@ -9,8 +9,12 @@ import com.andres.demotobetter.modules.security.service.AuthService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+
+import java.util.Map;
+
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+
 /**
  * Controller that handles authentication requests.
  * @author andres
@@ -23,7 +27,11 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseLoginTokenDTO login(@RequestBody @Valid LoginDTO loginDTO) {
-
         return authService.login(loginDTO);
+    }
+
+    @PostMapping("/refresh")
+    public ResponseLoginTokenDTO refresh(@RequestBody Map<String, String> body) {
+        return authService.refresh(body.get("refreshToken"));
     }
 }

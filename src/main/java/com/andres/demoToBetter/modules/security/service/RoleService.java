@@ -9,6 +9,9 @@ import com.andres.demotobetter.modules.security.entity.Role;
  * @author andres
  */
 public interface RoleService {
+    /**
+     * Transforms a set of role names into a set of roles.
+     */
     Set<Role> resolveRoles(Set<String> roleNames);
 }
 

@@ -21,4 +21,5 @@ spring:
 
 jwt:
   secret: "mySecretJWTKeyProjectDEmoTOBetter02022026"
-  expiration: 360000
+  expiration: 900000 
+  refresh: 604800000
