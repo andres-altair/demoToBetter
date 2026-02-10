@@ -13,6 +13,7 @@ import javax.crypto.SecretKey;
 
 /**
  * Class that manages JWT tokens.
+ * 
  * @author andres
  */
 @Service
@@ -56,10 +57,15 @@ public class JwtService {
             boolean usernameMatches = claims.getSubject().equals(userDetails.getUsername());
             boolean notExpired = claims.getExpiration().after(new Date());
 
-            return usernameMatches && notExpired;
+            if (!usernameMatches) {
+                return false;
+            }
+
+            return notExpired;
 
         } catch (Exception e) {
-            return false; 
+            return false;
         }
     }
+
 }
