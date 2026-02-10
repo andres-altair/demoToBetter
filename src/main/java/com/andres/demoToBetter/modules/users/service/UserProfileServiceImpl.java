@@ -21,8 +21,6 @@ import com.andres.demotobetter.modules.users.repository.UserProfileRepository;
 import com.andres.demotobetter.modules.users.spec.UserProfileSpecification;
 
 import lombok.AllArgsConstructor;
-import lombok.NonNull;
-
 /**
  * Class that implements UserProfileService.
  * @author andres
@@ -81,7 +79,7 @@ public class UserProfileServiceImpl implements UserProfileService {
     */
     @Transactional
     @Override
-    public UserProfileDTO save(@NonNull UserProfileCreateDTO dto) {
+    public UserProfileDTO save(UserProfileCreateDTO dto) {
         UserSecurity security = userSecurityService.createSecurityUser(
             dto.getEmail(), 
             dto.getPassword(),

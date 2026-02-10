@@ -116,6 +116,7 @@ class UserProfileServiceTest {
         verifyNoMoreInteractions(repository);
     }
 
+    @SuppressWarnings("null")
     @Test
     void findById_WhenIdNull_ThrowException() {
         assertThrows(BadRequestException.class, () -> service.findById(null));
@@ -123,6 +124,7 @@ class UserProfileServiceTest {
         verifyNoMoreInteractions(repository);
     }
 
+    @SuppressWarnings("null")
     @Test
     void delete_WhenIdNull_ThrowException() {
         assertThrows(BadRequestException.class, () -> service.delete(null));
@@ -153,6 +155,7 @@ class UserProfileServiceTest {
         verifyNoMoreInteractions(repository);
     }
 
+    @SuppressWarnings("null")
     @Test
     void update_WhenIdNull_ThrowException() {
         UserProfile updated = new UserProfile();

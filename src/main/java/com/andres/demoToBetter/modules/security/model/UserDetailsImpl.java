@@ -12,6 +12,7 @@ import com.andres.demotobetter.modules.security.entity.UserSecurity;
  * @author andres
  */
 public class UserDetailsImpl implements UserDetails {
+    @SuppressWarnings("unused")
     private final Long id;
     private final String email;
     private final String password;
