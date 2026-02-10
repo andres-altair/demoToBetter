@@ -18,14 +18,14 @@ import lombok.AllArgsConstructor;
 @Service
 @AllArgsConstructor
 public class UserSecurityServiceImpl implements UserSecurityService {
-    private static final String ERR_BAD_REQUEST = "ERR_BAD_REQUEST"; 
-    private final UserSecurityRepository userSecurityRepository; 
-    private final RoleService roleService; 
+    private static final String ERR_BAD_REQUEST = "ERR_BAD_REQUEST";
+    private final UserSecurityRepository userSecurityRepository;
+    private final RoleService roleService;
     private final PasswordEncoder passwordEncoder;
 
     @Override
     public UserSecurity createSecurityUser(String email, String password, Set<String> roles) {
-        if(userSecurityRepository.findByEmail(email).isPresent()){
+        if (userSecurityRepository.findByEmail(email).isPresent()) {
             throw new BadRequestException(ERR_BAD_REQUEST, "Email already in use");
         }
         UserSecurity userSecurity = new UserSecurity();

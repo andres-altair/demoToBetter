@@ -13,7 +13,6 @@ import javax.crypto.SecretKey;
 
 /**
  * Class that manages JWT tokens.
- * 
  * @author andres
  */
 @Service
@@ -25,6 +24,9 @@ public class JwtService {
     @Value("${jwt.expiration}")
     private long expiration;
 
+    @Value("${jwt.refresh}")
+    private long refreshExpiration;
+
     private SecretKey getSigningKey() {
         return Keys.hmacShaKeyFor(secret.getBytes());
     }
@@ -34,6 +36,14 @@ public class JwtService {
                 .subject(userDetails.getUsername())
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + expiration))
+                .signWith(getSigningKey())
+                .compact();
+    }
+
+    public String generateRefreshToken(String username) {
+        return Jwts.builder()
+                .subject(username)
+                .issuedAt(new Date())
                 .signWith(getSigningKey())
                 .compact();
     }
@@ -67,5 +77,4 @@ public class JwtService {
             return false;
         }
     }
-
 }
