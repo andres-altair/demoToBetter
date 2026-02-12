@@ -1,4 +1,4 @@
-package com.andres.demotobetter.modules.security.service;
+package com.andres.demotobetter.modules.security.service.jwt;
 
 import com.andres.demotobetter.modules.security.entity.RefreshToken;
 import com.andres.demotobetter.modules.security.entity.UserSecurity;

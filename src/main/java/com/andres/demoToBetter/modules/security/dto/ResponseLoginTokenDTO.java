@@ -10,6 +10,6 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class ResponseLoginTokenDTO {
-    private String token;
+    private String acsessToken;
     private String refreshToken;
 }
