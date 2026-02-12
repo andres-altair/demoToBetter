@@ -143,4 +143,13 @@ class AuthServiceImplTest {
         verify(refreshTokenService).getByToken(token);
         verifyNoMoreInteractions(refreshTokenService, jwtService);
     }
+
+    @Test
+    void refresh_WhenTokenExpired_ThrowException() {
+        String token = "token";
+        String username = "andres@mail.com";
+        UserSecurity userSecurity = new UserSecurity();
+        userSecurity.setEmail(username);
+        RefreshToken dbToken = new RefreshToken(); dbToken.setUser(userSecurity);
+    }
 }
