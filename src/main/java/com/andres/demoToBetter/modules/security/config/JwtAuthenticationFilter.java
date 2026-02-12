@@ -17,8 +17,11 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+
 /**
- * Filter class that checks if the request has a valid JWT token and sets the user details in the security context.
+ * Filter class that checks if the request has a valid JWT token and sets the
+ * user details in the security context.
+ * 
  * @author andres
  */
 @Component
@@ -45,6 +48,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             var userDetails = userDetailsServiceImpl.loadUserByUsername(username);
+
+            if (!userDetails.isEnabled()) {
+                filterChain.doFilter(request, response);
+                return;
+            }
             if (jwtService.isTokenValid(token, userDetails)) {
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                         userDetails,

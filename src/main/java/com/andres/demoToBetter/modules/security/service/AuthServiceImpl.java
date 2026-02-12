@@ -17,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 
 /**
  * Class that implements AuthService.
+ * 
  * @author andres
  */
 @Service
@@ -60,9 +61,13 @@ public class AuthServiceImpl implements AuthService {
         UserDetails userDetails = userDetailsServiceImpl.loadUserByUsername(username);
 
         RefreshToken oldToken = refreshTokenService.getByToken(refreshToken);
-        
+
         if (!oldToken.getUser().getEmail().equals(username)) {
             throw new BadRequestException(ERR_BAD_REQUEST, "Token does not belong to this user");
+        }
+
+        if (!oldToken.getUser().isActive()) {
+            throw new BadRequestException(ERR_BAD_REQUEST, "User account is disabled");
         }
         RefreshToken newToken = refreshTokenService.rotate(oldToken);
 

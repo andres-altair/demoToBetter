@@ -21,8 +21,10 @@ import com.andres.demotobetter.modules.users.repository.UserProfileRepository;
 import com.andres.demotobetter.modules.users.spec.UserProfileSpecification;
 
 import lombok.AllArgsConstructor;
+
 /**
  * Class that implements UserProfileService.
+ * 
  * @author andres
  */
 @Service
@@ -35,7 +37,7 @@ public class UserProfileServiceImpl implements UserProfileService {
     private static final String ERR_NOT_FOUND = "USR_404";
 
     private final UserProfileRepository repository;
-    private final UserSecurityService  userSecurityService;
+    private final UserSecurityService userSecurityService;
     private final UserProfileMapper mapper;
 
     @Override
@@ -74,30 +76,28 @@ public class UserProfileServiceImpl implements UserProfileService {
     }
 
     /**
-    * This method is transactional because it touches both the security
-    * and user profile tables.
-    */
+     * This method is transactional because it touches both the security
+     * and user profile tables.
+     */
     @Transactional
     @Override
     public UserProfileDTO save(UserProfileCreateDTO dto) {
         UserSecurity security = userSecurityService.createSecurityUser(
-            dto.getEmail(), 
-            dto.getPassword(),
-            dto.getRoles());
+                dto.getEmail(),
+                dto.getPassword(),
+                dto.getRoles());
         UserProfile profile = mapper.toEntity(dto);
         profile.setUserSecurity(security);
         repository.save(profile);
         return mapper.toDTO(profile);
     }
+
     @Override
     @SuppressWarnings("null")
     public void delete(Long id) {
         validateId(id);
 
-        if (!repository.existsById(id)) {
-            throw new NotFoundException(ERR_NOT_FOUND, "User with ID " + id + " does not exist");
-        }
-        repository.deleteById(id);
+        userSecurityService.disableUser(id);
     }
 
     @Override

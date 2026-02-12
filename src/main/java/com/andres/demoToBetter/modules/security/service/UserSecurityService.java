@@ -13,4 +13,7 @@ public interface UserSecurityService {
      * Creates a new security user.
      */
     UserSecurity createSecurityUser(String email, String password, Set<String> roles);
+
+    void disableUser(Long id);
+
 }

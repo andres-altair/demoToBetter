@@ -35,6 +35,9 @@ public class UserSecurity {
     @NotBlank(message = "Password is required")
     private String password;
 
+    @Column(name = "is_active")
+    private boolean active = true;
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "user_roles",
