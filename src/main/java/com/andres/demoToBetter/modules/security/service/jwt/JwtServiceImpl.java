@@ -1,4 +1,4 @@
-package com.andres.demotobetter.modules.security.service;
+package com.andres.demotobetter.modules.security.service.jwt;
 
 import java.util.Date;
 
@@ -6,17 +6,18 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import javax.crypto.SecretKey;
 
 /**
- * Class that manages JWT tokens.
+ * Class that implements JwtService.
  * @author andres
  */
 @Service
-public class JwtService {
+public class JwtServiceImpl implements JwtService {
 
     @Value("${jwt.secret}")
     private String secret;
@@ -31,6 +32,7 @@ public class JwtService {
         return Keys.hmacShaKeyFor(secret.getBytes());
     }
 
+    @Override
     public String generateToken(UserDetails userDetails) {
         return Jwts.builder()
                 .subject(userDetails.getUsername())
@@ -40,6 +42,7 @@ public class JwtService {
                 .compact();
     }
 
+    @Override
     public String generateRefreshToken(String username) {
         return Jwts.builder()
                 .subject(username)
@@ -48,6 +51,7 @@ public class JwtService {
                 .compact();
     }
 
+    @Override
     public Claims extractAllClaims(String token) {
         return Jwts.parser()
                 .verifyWith(getSigningKey())
@@ -56,10 +60,12 @@ public class JwtService {
                 .getPayload();
     }
 
+    @Override
     public String extractUsername(String token) {
         return extractAllClaims(token).getSubject();
     }
 
+    @Override
     public boolean isTokenValid(String token, UserDetails userDetails) {
         try {
             Claims claims = extractAllClaims(token);

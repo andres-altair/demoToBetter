@@ -1,10 +1,11 @@
-package com.andres.demotobetter.modules.security.service;
+package com.andres.demotobetter.modules.security.service.jwt;
 
 import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.andres.demotobetter.common.exception.custom.BadRequestException;
 import com.andres.demotobetter.modules.security.entity.RefreshToken;
 import com.andres.demotobetter.modules.security.entity.UserSecurity;
 import com.andres.demotobetter.modules.security.repository.RefreshTokenRepository;
@@ -20,6 +21,8 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
 
     @Value("${jwt.refresh}")
     private long refreshExpiration;
+
+    private static final String ERR_BAD_REQUEST = "AUTH_400";
 
     private final RefreshTokenRepository repository;
     private final JwtService jwtService;
@@ -47,9 +50,9 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
         repository.save(oldToken);
 
         RefreshToken newToken = new RefreshToken();
-        newToken.setToken(jwtService.generateRefreshToken(oldToken.getUser().getUsername()));
+        newToken.setToken(jwtService.generateRefreshToken(oldToken.getUser().getEmail()));
         newToken.setUser(oldToken.getUser());
-        newToken.setExpiryDate(oldToken.getExpiryDate()); // ← CLAVE
+        newToken.setExpiryDate(oldToken.getExpiryDate());
         return repository.save(newToken);
     }
     @Override
@@ -63,6 +66,6 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     @Override
     public RefreshToken getByToken(String token) {
         return repository.findByToken(token)
-                .orElseThrow(() -> new RuntimeException("Refresh token not found"));
+                .orElseThrow(() -> new BadRequestException(ERR_BAD_REQUEST, "Refresh token not found"));
     }
 }
