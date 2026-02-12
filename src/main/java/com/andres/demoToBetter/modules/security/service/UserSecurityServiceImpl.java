@@ -14,7 +14,6 @@ import lombok.AllArgsConstructor;
 
 /**
  * Class that implements UserSecurityService.
- * 
  * @author andres
  */
 @Service
