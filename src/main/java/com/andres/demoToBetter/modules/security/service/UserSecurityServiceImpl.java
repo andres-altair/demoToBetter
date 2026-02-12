@@ -6,6 +6,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.andres.demotobetter.common.exception.custom.BadRequestException;
+import com.andres.demotobetter.common.exception.custom.NotFoundException;
 import com.andres.demotobetter.modules.security.entity.UserSecurity;
 import com.andres.demotobetter.modules.security.repository.UserSecurityRepository;
 
@@ -19,6 +20,8 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class UserSecurityServiceImpl implements UserSecurityService {
     private static final String ERR_BAD_REQUEST = "ERR_BAD_REQUEST";
+    private static final String ERR_NOT_FOUND = "USR_404";
+
     private final UserSecurityRepository userSecurityRepository;
     private final RoleService roleService;
     private final PasswordEncoder passwordEncoder;
@@ -34,5 +37,13 @@ public class UserSecurityServiceImpl implements UserSecurityService {
         userSecurity.setPassword(passwordEncoder.encode(password));
         userSecurity.setRoles(roleService.resolveRoles(roles));
         return userSecurityRepository.save(userSecurity);
+    }
+
+    @Override
+    public void disableUser(Long id) {
+        UserSecurity user = userSecurityRepository.findById(id) 
+        .orElseThrow(() -> new NotFoundException(ERR_NOT_FOUND, "User with ID " + id + " does not exist")); 
+        user.setActive(false); 
+        userSecurityRepository.save(user);
     }
 }

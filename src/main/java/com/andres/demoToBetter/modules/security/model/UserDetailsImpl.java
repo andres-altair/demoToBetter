@@ -7,8 +7,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import com.andres.demotobetter.modules.security.entity.UserSecurity;
+
 /**
  * Class that implements UserDetails.
+ * 
  * @author andres
  */
 public class UserDetailsImpl implements UserDetails {
@@ -16,15 +18,15 @@ public class UserDetailsImpl implements UserDetails {
     private final Long id;
     private final String email;
     private final String password;
+    private final boolean active;
     private final Collection<? extends GrantedAuthority> authorities;
 
-    public UserDetailsImpl(UserSecurity user) { 
-        this.id = user.getId(); 
-        this.email = user.getEmail(); 
-        this.password = user.getPassword(); 
-        this.authorities = user.getRoles().stream()
-            .map(role -> new SimpleGrantedAuthority(role.getName()))
-            .toList(); 
+    public UserDetailsImpl(UserSecurity user) {
+        this.id = user.getId();
+        this.email = user.getEmail();
+        this.password = user.getPassword();
+        this.active = user.isActive();
+        this.authorities = user.getRoles().stream().map(role -> new SimpleGrantedAuthority(role.getName())).toList();
     }
 
     @Override
@@ -57,7 +59,8 @@ public class UserDetailsImpl implements UserDetails {
         return true;
     }
 
-    @Override public boolean isEnabled() { 
-        return true; 
+    @Override
+    public boolean isEnabled() {
+        return active;
     }
 }
