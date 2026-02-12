@@ -1,6 +1,7 @@
 package com.andres.demotobetter.modules.security.model;
 
 import java.util.Collection;
+import java.util.stream.Stream;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,7 +15,6 @@ import com.andres.demotobetter.modules.security.entity.UserSecurity;
  * @author andres
  */
 public class UserDetailsImpl implements UserDetails {
-    @SuppressWarnings("unused")
     private final Long id;
     private final String email;
     private final String password;
@@ -26,7 +26,12 @@ public class UserDetailsImpl implements UserDetails {
         this.email = user.getEmail();
         this.password = user.getPassword();
         this.active = user.isActive();
-        this.authorities = user.getRoles().stream().map(role -> new SimpleGrantedAuthority(role.getName())).toList();
+        this.authorities = user.getRoles().stream().flatMap(role -> {
+            Stream<GrantedAuthority> roleAuthority = Stream.of(new SimpleGrantedAuthority(role.getName()));
+            Stream<GrantedAuthority> permissionAuthorities = role.getPermissions().stream()
+                    .map(permission -> new SimpleGrantedAuthority(permission.getName()));
+            return Stream.concat(roleAuthority, permissionAuthorities);
+        }).toList();
     }
 
     @Override
