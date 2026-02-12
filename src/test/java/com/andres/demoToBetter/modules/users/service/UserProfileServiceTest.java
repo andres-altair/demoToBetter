@@ -38,7 +38,7 @@ class UserProfileServiceTest {
     @Mock
     private UserProfileMapper mapper;
     @Mock
-    private UserSecurityService userSecurityService ;
+    private UserSecurityService userSecurityService;
     @InjectMocks
     private UserProfileServiceImpl service;
 
@@ -124,35 +124,20 @@ class UserProfileServiceTest {
         verifyNoMoreInteractions(repository);
     }
 
-    @SuppressWarnings("null")
     @Test
     void delete_WhenIdNull_ThrowException() {
         assertThrows(BadRequestException.class, () -> service.delete(null));
-        verify(repository, never()).deleteById(null);
-        verifyNoMoreInteractions(repository);
+        verifyNoInteractions(userSecurityService);
     }
 
     @Test
-    void delete_WhenUserNotExist_ThrowException() {
-        when(repository.existsById(1L)).thenReturn(false);
-
-        RuntimeException ex = assertThrows(NotFoundException.class,
-                () -> service.delete(1L), "Debe lanzar excepción si el usuario no existe");
-        assertEquals("User with ID 1 does not exist", ex.getMessage());
-        verify(repository).existsById(anyLong());
-        verify(repository, never()).deleteById(anyLong());
-        verifyNoMoreInteractions(repository);
-    }
-
-    @Test
-    void delete_WhenUserExist_DeleteSuccessfully() {
-        when(repository.existsById(1L)).thenReturn(true);
+    void delete_WhenUserExist_DisableSuccessfully() {
+        doNothing().when(userSecurityService).disableUser(1L);
 
         service.delete(1L);
 
-        verify(repository).existsById(1L);
-        verify(repository).deleteById(1L);
-        verifyNoMoreInteractions(repository);
+        verify(userSecurityService).disableUser(1L);
+        verifyNoMoreInteractions(userSecurityService);
     }
 
     @SuppressWarnings("null")
@@ -200,17 +185,17 @@ class UserProfileServiceTest {
     }
 
     @Test
-    void save_WhenValidData_SaveSuccessfully(){
-        UserProfileCreateDTO dto = new UserProfileCreateDTO(); 
-        dto.setEmail("test@example.com"); 
-        dto.setPassword("123456"); 
+    void save_WhenValidData_SaveSuccessfully() {
+        UserProfileCreateDTO dto = new UserProfileCreateDTO();
+        dto.setEmail("test@example.com");
+        dto.setPassword("123456");
         dto.setRoles(Set.of("USER"));
-        UserSecurity security = new UserSecurity(); 
-        UserProfile entity = new UserProfile(); 
+        UserSecurity security = new UserSecurity();
+        UserProfile entity = new UserProfile();
         UserProfileDTO responseDTO = new UserProfileDTO();
 
         when(userSecurityService.createSecurityUser(dto.getEmail(), dto.getPassword(), dto.getRoles()))
-        .thenReturn(security);
+                .thenReturn(security);
         when(mapper.toEntity(dto)).thenReturn(entity);
         when(repository.save(entity)).thenReturn(entity);
         when(mapper.toDTO(entity)).thenReturn(responseDTO);
@@ -219,10 +204,10 @@ class UserProfileServiceTest {
 
         assertEquals(responseDTO, result);
         assertNotNull(result);
-        verify(userSecurityService).createSecurityUser( dto.getEmail(), dto.getPassword(), dto.getRoles() ); 
-        verify(mapper).toEntity(dto); 
-        verify(repository).save(entity); 
-        verify(mapper).toDTO(entity); 
-        verifyNoMoreInteractions(userSecurityService, mapper, repository); 
+        verify(userSecurityService).createSecurityUser(dto.getEmail(), dto.getPassword(), dto.getRoles());
+        verify(mapper).toEntity(dto);
+        verify(repository).save(entity);
+        verify(mapper).toDTO(entity);
+        verifyNoMoreInteractions(userSecurityService, mapper, repository);
     }
 }

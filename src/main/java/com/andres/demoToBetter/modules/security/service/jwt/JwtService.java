@@ -13,6 +13,9 @@ public interface JwtService {
      * Generates a JWT token for the given user.
      */
     public String generateToken(UserDetails userDetails);
+    /**
+     * Generates a refresh token for the given user.
+     */
     public String generateRefreshToken(String username);
     /**
      * Extracts all claims from the given token.

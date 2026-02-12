@@ -93,7 +93,6 @@ public class UserProfileServiceImpl implements UserProfileService {
     }
 
     @Override
-    @SuppressWarnings("null")
     public void delete(Long id) {
         validateId(id);
 
