@@ -1,0 +1,33 @@
+package com.andres.demotobetter.modules.users.dto;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.util.Set;
+
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+
+/**
+ * Data Transfer Object used for creating a new User.
+ * @author andres
+ */
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class UserProfileCreateDTO { 
+    @NotBlank(message = "email is required")
+    @Email(message = "email must be valid")
+    private String email;
+    @NotBlank(message = "password is required")
+    private String password;
+    private Set<String> roles;
+    @NotBlank(message = "firstName is required") 
+    private String firstName; 
+    @NotBlank(message = "lastName is required") 
+    private String lastName;
+    @NotBlank(message = "phone is required")
+    private String phone; 
+    private String avatarUrl;
+}
