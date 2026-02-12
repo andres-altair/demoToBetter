@@ -39,6 +39,7 @@ public class UserSecurityServiceImpl implements UserSecurityService {
         return userSecurityRepository.save(userSecurity);
     }
 
+    @SuppressWarnings("null")
     @Override
     public void disableUser(Long id) {
         UserSecurity user = userSecurityRepository.findById(id) 

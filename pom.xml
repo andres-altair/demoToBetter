@@ -142,7 +142,11 @@
 						<exclude>**/dto/**</exclude>
 						<exclude>**/mapper/**</exclude>
 						<exclude>**/config/**</exclude>
+						<exclude>**/model/**</exclude>
+						<exclude>**/spec/**</exclude>
+
 					</excludes>
+
 				</configuration>
 				<executions>
 					<execution>
