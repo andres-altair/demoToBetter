@@ -1,4 +1,10 @@
 spring:
+  application:
+    name: demotobetter
+  
+  profiles:
+    active: dev
+
   datasource:
     url: jdbc:h2:mem:testdb
     driver-class-name: org.h2.Driver
@@ -23,3 +29,12 @@ jwt:
   secret: "mySecretJWTKeyProjectDEmoTOBetter02022026"
   expiration: 900000 
   refresh: 604800000
+
+logging:
+  pattern:
+    level: "%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]"
+
+management:
+  tracing:
+    sampling:
+      probability: 1.0

@@ -39,6 +39,9 @@ public class UserDetailsImpl implements UserDetails {
         return authorities;
     }
 
+    public Long getId() {
+    return id;
+}
     @Override
     public String getUsername() {
         return email;

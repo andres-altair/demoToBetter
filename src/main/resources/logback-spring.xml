@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <!-- Variables configurables desde application.yml -->
+    <springProperty scope="context" name="APP_NAME" source="spring.application.name"
+        defaultValue="demo-app" />
+
+    <!-- 1. CONSOLA: Para desarrollo (Legible con colores) -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %highlight(%-5level) %cyan(%logger{36}) -
+                %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- 2. ARCHIVO JSON: Para Producción (Estructurado) -->
+    <appender name="JSON_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>logs/${APP_NAME}.json</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- Rota el archivo cada día y lo comprime -->
+            <fileNamePattern>logs/archived/${APP_NAME}-%d{yyyy-MM-dd}.log.gz</fileNamePattern>
+            <maxHistory>30</maxHistory> <!-- Guarda 30 días de logs -->
+            <totalSizeCap>3GB</totalSizeCap>
+        </rollingPolicy>
+        <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+            <providers>
+                <timestamp>
+                    <timeZone>UTC</timeZone>
+                </timestamp>
+                <pattern>
+                    <pattern>
+                        {
+                        "timestamp": "%d{yyyy-MM-dd'T'HH:mm:ss.SSSZ}",
+                        "level": "%level",
+                        "service": "${APP_NAME}",
+                        "traceId": "%X{traceId:-none}",
+                        "userId": "%X{userId:-system}",
+                        "method": "%X{method:-none}",
+                        "path": "%X{path:-none}",
+                        "ip": "%X{ip:-none}",
+                        "message": "%message",
+                        "exception": "%ex"
+                        }
+                    </pattern>
+                </pattern>
+            </providers>
+        </encoder>
+
+    </appender>
+
+    <!-- CONFIGURACIÓN POR PERFILES -->
+
+    <!-- Desarrollo: Solo consola -->
+    <springProfile name="dev">
+        <root level="INFO">
+            <appender-ref ref="CONSOLE" />
+        </root>
+        <logger name="com.andres.demotobetter" level="DEBUG" />
+    </springProfile>
+
+    <!-- Producción: Consola + JSON -->
+    <springProfile name="dev">
+        <root level="INFO">
+            <appender-ref ref="CONSOLE" />
+            <appender-ref ref="JSON_FILE" />
+        </root>
+    </springProfile>
+
+</configuration>
