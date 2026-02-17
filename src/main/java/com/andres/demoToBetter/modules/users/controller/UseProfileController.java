@@ -18,6 +18,8 @@ import com.andres.demotobetter.modules.users.entity.UserProfile;
 import com.andres.demotobetter.modules.users.mapper.UserProfileMapper;
 import com.andres.demotobetter.modules.users.service.UserProfileService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 /**
@@ -25,6 +27,7 @@ import jakarta.validation.Valid;
  * 
  * @author andres
  */
+@Tag(name = "UserProfiles Controller", description = "Endpoints for managing user profiles")
 @RestController
 @RequestMapping("/api/users")
 @AllArgsConstructor
@@ -41,6 +44,7 @@ public class UseProfileController {
      *                 lastName, phone)
      * @param pageable pagination and sorting information
      */
+    @Operation(summary = "Listar perfiles", description = "Obtiene una lista paginada de perfiles activos.")
     @GetMapping
     public ResponseEntity<Page<UserProfileDTO>> getAll(
             UserProfileFilterDTO filter,
@@ -58,6 +62,7 @@ public class UseProfileController {
      *
      * @param id the user ID
      */
+    @Operation(summary = "Obtener perfil por ID")
     @GetMapping("/{id}")
     public ResponseEntity<UserProfileDTO> getById(@PathVariable Long id) {
         log.debug("Buscando perfil con ID: {}", id);
@@ -70,6 +75,7 @@ public class UseProfileController {
      *
      * @param dto the data for the new user
      */
+    @Operation(summary = "Registrar nuevo perfil")
     @PostMapping
     public ResponseEntity<UserProfileDTO> create(@Valid @RequestBody UserProfileCreateDTO dto) {
         log.info("Creando nuevo perfil de usuario para: {}", dto.getEmail());
@@ -83,6 +89,7 @@ public class UseProfileController {
      *
      * @param id the user ID
      */
+    @Operation(summary = "Deasactivar perfil por ID", description = "Desactiva el perfil con el ID proporcionado.")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         log.info("Petición para eliminar perfil con ID: {}", id);
@@ -96,6 +103,7 @@ public class UseProfileController {
      * @param id  the user ID
      * @param dto the updated user data
      */
+    @Operation(summary = "Actualizar perfil por ID")
     @PutMapping("/{id}")
     public ResponseEntity<UserProfileDTO> update(@PathVariable Long id, @Valid @RequestBody UserProfileUpdateDTO dto) {
         log.info("Actualizando perfil con ID: {}", id);

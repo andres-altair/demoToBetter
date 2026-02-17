@@ -57,7 +57,7 @@ class AuthServiceImplTest {
 
         ResponseLoginTokenDTO response = authService.login(loginDTO);
 
-        assertEquals("jwt-token", response.getAcsessToken());
+        assertEquals("jwt-token", response.getAccessToken());
         assertEquals("refresh-token", response.getRefreshToken());
         verify(authenticationManager)
                 .authenticate(any(UsernamePasswordAuthenticationToken.class));
@@ -119,7 +119,7 @@ class AuthServiceImplTest {
 
         ResponseLoginTokenDTO response = authService.refresh(oldTokenString);
 
-        assertEquals("new-access-token", response.getAcsessToken());
+        assertEquals("new-access-token", response.getAccessToken());
         assertEquals("new-refresh-token", response.getRefreshToken());
         verify(refreshTokenService).validate(oldTokenString);
         verify(jwtService).extractUsername(oldTokenString);
@@ -174,7 +174,6 @@ class AuthServiceImplTest {
 
         when(refreshTokenService.validate(token)).thenReturn(true);
         when(jwtService.extractUsername(token)).thenReturn(username);
-        // when(userDetailsServiceImpl.loadUserByUsername(username)).thenReturn(mock(UserDetails.class));
         when(refreshTokenService.getByToken(token)).thenReturn(dbToken);
 
         assertThrows(BadRequestException.class, () -> authService.refresh(token));

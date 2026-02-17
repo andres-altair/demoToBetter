@@ -43,6 +43,9 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/h2-console/**").permitAll() // ← allowe H2
+                        .requestMatchers("/v3/api-docs/**").permitAll()
+                        .requestMatchers("/swagger-ui/**").permitAll()
+                        .requestMatchers("/swagger-ui.html").permitAll()
                         .requestMatchers(HttpMethod.GET, URL_MATCHER).hasAuthority("READ")
                         .requestMatchers(HttpMethod.POST, URL_MATCHER).hasAuthority("WRITE")
                         .requestMatchers(HttpMethod.PUT, URL_MATCHER).hasAuthority("UPDATE")
