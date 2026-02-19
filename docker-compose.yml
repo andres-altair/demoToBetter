@@ -1,0 +1,9 @@
+version: "3.9"
+
+services:
+  demotobetter:
+    build: .
+    container_name: demotobetter_container
+    ports:
+      - 8080:8080
+    restart: always

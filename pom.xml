@@ -148,7 +148,7 @@
 			<version>1.6.3</version>
 			<scope>compile</scope>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.springdoc</groupId>
 			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
@@ -175,7 +175,7 @@
 						<exclude>**/config/**</exclude>
 						<exclude>**/model/**</exclude>
 						<exclude>**/spec/**</exclude>
-
+						<exclude>**/entity/**</exclude>
 					</excludes>
 
 				</configuration>
