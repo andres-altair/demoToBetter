@@ -25,14 +25,14 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) {
-        log.debug("Cargando detalles de seguridad para el usuario: {}", email);
+        log.debug("Loading user security details: {}", email);
         var user = userSecurityRepository.findByEmail(email)
                 .orElseThrow(() -> {
-                    log.warn("Carga fallida: No se encontró usuario con el email: {}", email);
+                    log.warn("Load failed: No user found with the email: {}", email);
                     return new UsernameNotFoundException("User not found");
                 });
 
-        log.debug("Usuario {} cargado correctamente desde la base de datos", email);
+        log.debug("User {} successfully loaded from the database", email);
         return new UserDetailsImpl(user);
     }
 }

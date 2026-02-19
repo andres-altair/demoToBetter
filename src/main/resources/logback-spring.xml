@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-    <!-- Variables configurables desde application.yml -->
+    <!-- Configurable variables from application.yml -->
     <springProperty scope="context" name="APP_NAME" source="spring.application.name"
         defaultValue="demo-app" />
 
-    <!-- 1. CONSOLA: Para desarrollo (Legible con colores) -->
+    <!-- 1. CONSOLE: For development (Readable in color) -->
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %highlight(%-5level) %cyan(%logger{36}) -
@@ -12,13 +12,13 @@
         </encoder>
     </appender>
 
-    <!-- 2. ARCHIVO JSON: Para Producción (Estructurado) -->
+    <!-- 2. JSON FILE: For Production (Structured) -->
     <appender name="JSON_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>logs/${APP_NAME}.json</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <!-- Rota el archivo cada día y lo comprime -->
+            <!-- Rotate the file daily and compress it. -->
             <fileNamePattern>logs/archived/${APP_NAME}-%d{yyyy-MM-dd}.log.gz</fileNamePattern>
-            <maxHistory>30</maxHistory> <!-- Guarda 30 días de logs -->
+            <maxHistory>30</maxHistory> <!-- Save 30 days of logs -->
             <totalSizeCap>3GB</totalSizeCap>
         </rollingPolicy>
         <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
@@ -47,9 +47,9 @@
 
     </appender>
 
-    <!-- CONFIGURACIÓN POR PERFILES -->
+    <!-- PROFILE-BASED GUIDANCE -->
 
-    <!-- Desarrollo: Solo consola -->
+    <!--Development: Console only -->
     <springProfile name="dev">
         <root level="INFO">
             <appender-ref ref="CONSOLE" />
@@ -57,7 +57,7 @@
         <logger name="com.andres.demotobetter" level="DEBUG" />
     </springProfile>
 
-    <!-- Producción: Consola + JSON -->
+    <!-- Production: Console + JSON -->
     <springProfile name="dev">
         <root level="INFO">
             <appender-ref ref="CONSOLE" />

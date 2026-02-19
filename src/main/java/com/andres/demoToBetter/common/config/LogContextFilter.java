@@ -2,6 +2,7 @@ package com.andres.demotobetter.common.config;
 
 import java.io.IOException;
 
+import org.slf4j.MDC;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.lang.NonNull;
@@ -29,12 +30,12 @@ public class LogContextFilter extends OncePerRequestFilter {
             @NonNull FilterChain filterChain)
             throws ServletException, IOException {
         try {
-            org.slf4j.MDC.put("method", request.getMethod());
-            org.slf4j.MDC.put("path", request.getRequestURI());
-            org.slf4j.MDC.put("ip", request.getRemoteAddr());
+            MDC.put("method", request.getMethod());
+            MDC.put("path", request.getRequestURI());
+            MDC.put("ip", request.getRemoteAddr());
             filterChain.doFilter(request, response);
         } finally {
-            org.slf4j.MDC.clear();
+            MDC.clear();
         }
     }
 }

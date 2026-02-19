@@ -83,12 +83,12 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(NoResourceFoundException.class)
     public ResponseEntity<ErrorDTO> handleNoResourceFound(NoResourceFoundException ex, HttpServletRequest request) {
-        log.warn("Ruta no encontrada [404]: {}", request.getRequestURI());
+        log.warn("Route not found [404]: {}", request.getRequestURI());
 
         return buildResponse(
                 "API_404",
-                "La URL solicitada no existe",
-                "Verifica el endpoint: " + request.getRequestURI(),
+                "The requested URL does not exist.",
+                "Verify the endpoint: " + request.getRequestURI(),
                 HttpStatus.NOT_FOUND,
                 request);
     }

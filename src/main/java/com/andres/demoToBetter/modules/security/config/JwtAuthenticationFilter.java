@@ -14,6 +14,7 @@ import com.andres.demotobetter.modules.security.model.UserDetailsImpl;
 import com.andres.demotobetter.modules.security.service.UserDetailsServiceImpl;
 import com.andres.demotobetter.modules.security.service.jwt.JwtService;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -68,21 +69,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     authToken.setDetails(
                             new WebAuthenticationDetailsSource().buildDetails(request));
 
-                    // Llenamos el userId para nuestro log JSON empresarial
                     MDC.put("userId", String.valueOf(((UserDetailsImpl) userDetails).getId()));
 
                     SecurityContextHolder.getContext().setAuthentication(authToken);
                 }
             }
-        } catch (io.jsonwebtoken.ExpiredJwtException e) {
-            // Logueamos la advertencia con el traceId que ya puso el LogContextFilter
-            log.warn("JWT expirado en la petición a {}: {}", request.getRequestURI(), e.getMessage());
-            // No hacemos nada más. Al no setear la autenticación, 
-            // Spring Security lanzará automáticamente el CustomAuthenticationEntryPoint.
+        } catch (ExpiredJwtException e) {
+            log.warn("JWT expired in the request to {}: {}", request.getRequestURI(), e.getMessage());
         } catch (io.jsonwebtoken.JwtException e) {
-            log.error("Token JWT inválido o corrupto: {}", e.getMessage());
+            log.error("Invalid or corrupt JWT token: {}", e.getMessage());
         } catch (Exception e) {
-            log.error("Error inesperado en el filtro de seguridad: ", e);
+            log.error("Unexpected error in the security filter: ", e);
         }
 
         filterChain.doFilter(request, response);

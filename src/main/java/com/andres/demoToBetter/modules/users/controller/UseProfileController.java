@@ -44,12 +44,12 @@ public class UseProfileController {
      *                 lastName, phone)
      * @param pageable pagination and sorting information
      */
-    @Operation(summary = "Listar perfiles", description = "Obtiene una lista paginada de perfiles activos.")
+    @Operation(summary = "List profiles", description = "It provides a paginated list of active profiles.")
     @GetMapping
     public ResponseEntity<Page<UserProfileDTO>> getAll(
             UserProfileFilterDTO filter,
             Pageable pageable) {
-        log.debug("Consultando lista paginada de perfiles con filtros: {}", filter);
+        log.debug("Viewing paginated list of profiles with filters: {}", filter);
 
         Page<UserProfileDTO> users = userService.findAll(filter, pageable)
                 .map(userMapper::toDTO);
@@ -62,10 +62,10 @@ public class UseProfileController {
      *
      * @param id the user ID
      */
-    @Operation(summary = "Obtener perfil por ID")
+    @Operation(summary = "Get profile by ID")
     @GetMapping("/{id}")
     public ResponseEntity<UserProfileDTO> getById(@PathVariable Long id) {
-        log.debug("Buscando perfil con ID: {}", id);
+        log.debug("Looking for profile with ID: {}", id);
         UserProfileDTO user = userMapper.toDTO(userService.findById(id));
         return ResponseEntity.ok(user);
     }
@@ -75,10 +75,10 @@ public class UseProfileController {
      *
      * @param dto the data for the new user
      */
-    @Operation(summary = "Registrar nuevo perfil")
+    @Operation(summary = "Register a new profile")
     @PostMapping
     public ResponseEntity<UserProfileDTO> create(@Valid @RequestBody UserProfileCreateDTO dto) {
-        log.info("Creando nuevo perfil de usuario para: {}", dto.getEmail());
+        log.info("Crating new profile for: {}", dto.getEmail());
 
         UserProfileDTO response = userService.save(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
@@ -89,10 +89,10 @@ public class UseProfileController {
      *
      * @param id the user ID
      */
-    @Operation(summary = "Deasactivar perfil por ID", description = "Desactiva el perfil con el ID proporcionado.")
+    @Operation(summary = "Deactivate profile by ID", description = "Deactivate the profile with the provided ID.")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
-        log.info("Petición para eliminar perfil con ID: {}", id);
+        log.info("Request to delete profile with ID: {}", id);
         userService.delete(id);
         return ResponseEntity.noContent().build();
     }
@@ -103,10 +103,10 @@ public class UseProfileController {
      * @param id  the user ID
      * @param dto the updated user data
      */
-    @Operation(summary = "Actualizar perfil por ID")
+    @Operation(summary = "Update profile by ID")
     @PutMapping("/{id}")
     public ResponseEntity<UserProfileDTO> update(@PathVariable Long id, @Valid @RequestBody UserProfileUpdateDTO dto) {
-        log.info("Actualizando perfil con ID: {}", id);
+        log.info("Updating profile with ID: {}", id);
         UserProfile user = userMapper.toEntity(dto);
         UserProfile updated = userService.update(id, user);
         UserProfileDTO response = userMapper.toDTO(updated);

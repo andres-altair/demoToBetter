@@ -13,9 +13,9 @@ import lombok.Data;
 @AllArgsConstructor
 public class ResponseLoginTokenDTO {
 
-    @Schema(description = "Token de acceso JWT", example = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...")
+    @Schema(description = "Access token JWT", example = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...")
     private String accessToken;
 
-    @Schema(description = "Token de refresco JWT", example = "dGhpc19pc19hX3JlZnJlc2hfdG9rZW4")
+    @Schema(description = "Refresh token JWT", example = "dGhpc19pc19hX3JlZnJlc2hfdG9rZW4")
     private String refreshToken;
 }

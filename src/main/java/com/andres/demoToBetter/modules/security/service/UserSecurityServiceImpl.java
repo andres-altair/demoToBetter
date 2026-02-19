@@ -31,10 +31,10 @@ public class UserSecurityServiceImpl implements UserSecurityService {
 
     @Override
     public UserSecurity createSecurityUser(String email, String password, Set<String> roles) {
-        log.debug("Verificando disponibilidad de email para nuevo usuario: {}", email);
+        log.debug("Checking email availability for new user: {}", email);
 
         if (userSecurityRepository.findByEmail(email).isPresent()) {
-            log.warn("Fallo al crear usuario: El email {} ya está registrado", email);
+            log.warn("Failed to create user: Email {} is already in use", email);
             throw new BadRequestException(ERR_BAD_REQUEST, "Email already in use");
         }
         UserSecurity userSecurity = new UserSecurity();
@@ -42,23 +42,23 @@ public class UserSecurityServiceImpl implements UserSecurityService {
         userSecurity.setEmail(email);
         userSecurity.setPassword(passwordEncoder.encode(password));
         userSecurity.setRoles(roleService.resolveRoles(roles));
-        log.info("Credenciales de seguridad creadas exitosamente para el usuario: {}", email);
+        log.info("Credentials for security created successfully for user: {}", email);
         return userSecurityRepository.save(userSecurity);
     }
 
     @SuppressWarnings("null")
     @Override
     public void disableUser(Long id) {
-        log.info("Solicitud de desactivación para el usuario de seguridad con ID: {}", id);
+        log.info("Deactivation request for security user with ID: {}", id);
 
         UserSecurity user = userSecurityRepository.findById(id)
                 .orElseThrow(() -> {
-                    log.warn("No se pudo desactivar: Usuario de seguridad con ID {} no existe", id);
+                    log.warn("Deactivation failed: Security user with ID {} does not exist", id);
                     return new NotFoundException(ERR_NOT_FOUND, "User with ID " + id + " does not exist");
                 });
 
         user.setActive(false);
         userSecurityRepository.save(user);
-        log.info("Estado del usuario ID: {} cambiado a INACTIVO", id);
+        log.info("User ID status: {} changed to INACTIVE", id);
     }
 }

@@ -13,12 +13,12 @@ import lombok.Setter;
 @Setter
 public class UserProfileFilterDTO {
 
-    @Schema(description = "Filtrar por nombre del usuario", example = "Andrés")
+    @Schema(description = "Filter by username", example = "Andrés")
     private String firstName;
 
-    @Schema(description = "Filtrar por apellido del usuario", example = "Molina")
+    @Schema(description = "Filter by last name", example = "Molina")
     private String lastName;
 
-    @Schema(description = "Filtrar por número de teléfono", example = "+34 600 123 456")
+    @Schema(description = "Filtre by phone", example = "+34 600 123 456")
     private String phone;
 }
