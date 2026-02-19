@@ -15,18 +15,18 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UserProfileDTO {
 
-    @Schema(description = "ID único del usuario", example = "15")
+    @Schema(description = "Unique user ID", example = "15")
     private Long id;
 
-    @Schema(description = "Nombre del usuario", example = "Andrés")
+    @Schema(description = "User's first name", example = "Andrés")
     private String firstName;
 
-    @Schema(description = "Apellido del usuario", example = "Molina")
+    @Schema(description = "User's last name", example = "Molina")
     private String lastName;
 
-    @Schema(description = "Número de teléfono", example = "+34 600 123 456")
+    @Schema(description = "Phone number", example = "+34 600 123 456")
     private String phone;
 
-    @Schema(description = "URL del avatar del usuario", example = "https://cdn.site.com/avatar.png")
+    @Schema(description = "URL of the user's avatar", example = "https://cdn.site.com/avatar.png")
     private String avatarUrl;
 }

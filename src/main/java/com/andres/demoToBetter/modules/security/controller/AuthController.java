@@ -33,14 +33,14 @@ public class AuthController {
     @Operation(summary = "Login", description = "Endpoint for user login")
     @PostMapping("/login")
     public ResponseLoginTokenDTO login(@RequestBody @Valid LoginDTO loginDTO) {
-        log.info("Intento de login para el usuario: {}", loginDTO.getEmail());
+        log.info("User login attempt: {}", loginDTO.getEmail());
         return authService.login(loginDTO);
     }
 
     @Operation(summary = "Refresh Token", description = "Endpoint for token refresh")
     @PostMapping("/refresh")
     public ResponseLoginTokenDTO refresh(@RequestBody Map<String, String> body) {
-        log.info("Petición de refresco de token recibida");
+        log.info("Token refresh request received");
         return authService.refresh(body.get("refreshToken"));
     }
 }

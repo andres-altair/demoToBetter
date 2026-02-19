@@ -7,7 +7,11 @@ import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
+/**
+ * Configuration class for OpenAPI.
+ * 
+ * @author andres
+ */
 @Configuration
 public class OpenApiConfig {
         @Bean
@@ -17,7 +21,7 @@ public class OpenApiConfig {
                                 .info(new Info()
                                                 .title("DemoToBetter API")
                                                 .version("1.0")
-                                                .description("Documentación de la API con trazabilidad y seguridad JWT"))
+                                                .description("API documentation with traceability and JWT security"))
                                 .addSecurityItem(new SecurityRequirement().addList(securitySchemeName))
                                 .components(new Components()
                                                 .addSecuritySchemes(securitySchemeName,

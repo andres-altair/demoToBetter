@@ -19,24 +19,24 @@ import lombok.NoArgsConstructor;
 @Builder
 public class ErrorDTO {
 
-    @Schema(description = "Código interno del error", example = "AUTH_401")
+    @Schema(description = "Internal error code", example = "AUTH_401")
     private String code;
 
-    @Schema(description = "Mensaje principal del error", example = "Authentication failed")
+    @Schema(description = "Main error message", example = "Authentication failed")
     private String message;
 
-    @Schema(description = "Detalle adicional del error", example = "Invalid credentials")
+    @Schema(description = "Additional details of the error", example = "Invalid credentials")
     private String detail;
 
-    @Schema(description = "Código de estado HTTP", example = "401")
+    @Schema(description = "HTTP status code", example = "401")
     private int status;
 
-    @Schema(description = "Ruta donde ocurrió el error", example = "/api/auth/login")
+    @Schema(description = "Route where the error occurred", example = "/api/auth/login")
     private String path;
 
-    @Schema(description = "Identificador único para trazabilidad", example = "c1a2b3d4-e5f6-7890-abcd-1234567890ef")
+    @Schema(description = "Unique identifier for traceability", example = "c1a2b3d4-e5f6-7890-abcd-1234567890ef")
     private String traceId;
 
-    @Schema(description = "Fecha y hora del error", example = "2025-02-17T10:15:30")
+    @Schema(description = "Date and time of the error", example = "2025-02-17T10:15:30")
     private LocalDateTime timestamp;
 }

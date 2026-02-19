@@ -14,18 +14,18 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UserProfileUpdateDTO {
 
-    @Schema(description = "Nombre del usuario", example = "Andrés")
+    @Schema(description = "User's first name", example = "Andrés")
     @NotBlank(message = "firstName is required")
     private String firstName;
 
-    @Schema(description = "Apellido del usuario", example = "Molina")
+    @Schema(description = "User's last name", example = "Molina")
     @NotBlank(message = "lastName is required")
     private String lastName;
 
-    @Schema(description = "Número de teléfono del usuario", example = "+34 600 123 456")
+    @Schema(description = "Phone number", example = "+34 600 123 456")
     @NotBlank(message = "phone is required")
     private String phone;
 
-    @Schema(description = "URL del avatar del usuario", example = "https://cdn.site.com/avatar.png")
+    @Schema(description = "URL of the user's avatar", example = "https://cdn.site.com/avatar.png")
     private String avatarUrl;
 }

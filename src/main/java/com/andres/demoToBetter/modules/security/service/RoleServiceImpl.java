@@ -28,20 +28,20 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public Set<Role> resolveRoles(Set<String> roleNames) {
         if (roleNames == null || roleNames.isEmpty()) {
-            log.debug("No se proporcionaron roles. Asignando rol por defecto: USER");
+            log.debug("No roles were provided. Assigning default role: USER");
             return Set.of(
                     roleRepository.findByName("USER")
                             .orElseThrow(() -> {
-                                log.error("ERROR CRÍTICO: Rol USER no encontrado en la base de datos");
+                                log.error("CRITICAL ERROR: USER role not found in the database");
                                 return new BadRequestException(ERR_BAD_REQUEST, "Role USER not found");
                             }));
         }
 
-        log.debug("Resolviendo nombres de roles: {}", roleNames);
+        log.debug("Resolving role names: {}", roleNames);
         return roleNames.stream()
                 .map(name -> roleRepository.findByName(name)
                         .orElseThrow(() -> {
-                            log.warn("Intento de asignar rol inexistente: {}", name);
+                            log.warn("Attempt to assign a non-existent role: {}", name);
                             return new BadRequestException(ERR_BAD_REQUEST, "Role '" + name + "' not found");
                         }))
                 .collect(Collectors.toSet());

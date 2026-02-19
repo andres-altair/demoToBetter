@@ -15,12 +15,12 @@ import lombok.Data;
 @Data
 public class LoginDTO {
 
-    @Schema(description = "Correo del usuario", example = "andres@mail.com")
+    @Schema(description = "User's email", example = "andres@mail.com")
     @Email(message = "Email must be valid")
     @NotBlank(message = "Email is required")
     private String email;
 
-    @Schema(description = "Contraseña del usuario", example = "StrongPass123!")
+    @Schema(description = "User password", example = "StrongPass12345aqswderf!")
     @NotBlank(message = "Password is required")
     private String password;
 }
