@@ -20,8 +20,6 @@ RUN addgroup -S spring && adduser -S spring -G spring
 # ARG with the path relative to the builder's WORKDIR
 ARG JAR_FILE=target/*.jar
 
-# Crear carpeta de logs con permisos correctos 
-RUN mkdir -p /app/logs && chown -R spring:spring /app/logs
 # COPY WITH PERMISSIONS (Crucial for it to work with USER spring)
 # You no longer need the asterisk, you're guaranteed to get it right
 COPY --from=builder --chown=spring:spring /app/target/app.jar app.jar
