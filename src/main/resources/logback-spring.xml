@@ -1,26 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-    <!-- Configurable variables from application.yml -->
+
+    <!-- Nombre del servicio desde application.yml -->
     <springProperty scope="context" name="APP_NAME" source="spring.application.name"
-        defaultValue="demo-app" />
+        defaultValue="spring-app" />
 
-    <!-- 1. CONSOLE: For development (Readable in color) -->
-    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
-        <encoder>
-            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %highlight(%-5level) %cyan(%logger{36}) -
-                %msg%n</pattern>
-        </encoder>
-    </appender>
-
-    <!-- 2. JSON FILE: For Production (Structured) -->
-    <appender name="JSON_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>logs/${APP_NAME}.json</file>
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <!-- Rotate the file daily and compress it. -->
-            <fileNamePattern>logs/archived/${APP_NAME}-%d{yyyy-MM-dd}.log.gz</fileNamePattern>
-            <maxHistory>30</maxHistory> <!-- Save 30 days of logs -->
-            <totalSizeCap>3GB</totalSizeCap>
-        </rollingPolicy>
+    <!-- 1. APPENDER JSON A STDOUT (Producción) -->
+    <appender name="JSON_STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
             <providers>
                 <timestamp>
@@ -44,24 +30,27 @@
                 </pattern>
             </providers>
         </encoder>
-
     </appender>
 
-    <!-- PROFILE-BASED GUIDANCE -->
+    <!-- 2. APPENDER COLOR PARA DESARROLLO -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %highlight(%-5level) %cyan(%logger{36}) -
+                %msg%n</pattern>
+        </encoder>
+    </appender>
 
-    <!--Development: Console only -->
+    <!-- PERFIL DEV -->
     <springProfile name="dev">
-        <root level="INFO">
+        <root level="DEBUG">
             <appender-ref ref="CONSOLE" />
         </root>
-        <logger name="com.andres.demotobetter" level="DEBUG" />
     </springProfile>
 
-    <!-- Production: Console + JSON -->
-    <springProfile name="dev">
+    <!-- PERFIL PROD -->
+    <springProfile name="prod">
         <root level="INFO">
-            <appender-ref ref="CONSOLE" />
-            <appender-ref ref="JSON_FILE" />
+            <appender-ref ref="JSON_STDOUT" />
         </root>
     </springProfile>
 
