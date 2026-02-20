@@ -159,6 +159,7 @@
 	</dependencies>
 
 	<build>
+		<finalName>app</finalName>
 		<plugins>
 
 			<plugin>
@@ -196,7 +197,7 @@
 			</plugin>
 
 
-			<!-- Compiler plugin: necesario para MapStruct + Lombok + Java 21 -->
+			<!-- Compiler plugin: required for MapStruct + Lombok + Java 21 -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
