@@ -21,8 +21,10 @@ RUN addgroup -S spring && adduser -S spring -G spring
 ARG JAR_FILE=target/*.jar
 
 # COPY WITH PERMISSIONS (Crucial for it to work with USER spring)
-# You no longer need the asterisk, you're guaranteed to get it right
 COPY --from=builder --chown=spring:spring /app/target/app.jar app.jar
+
+COPY --chown=spring:spring entrypoint.sh /app/entrypoint.sh 
+RUN chmod +x /app/entrypoint.sh
 
 # Switch to the non-root user after copying
 USER spring:spring
@@ -32,4 +34,5 @@ ENV JAVA_TOOL_OPTIONS="-XX:+UseContainerSupport -XX:MaxRAMPercentage=75.0"
 
 EXPOSE 8080
 
-ENTRYPOINT ["java", "-jar", "app.jar"]
+ENTRYPOINT ["/app/entrypoint.sh"]
+
