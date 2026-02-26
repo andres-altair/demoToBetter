@@ -13,6 +13,6 @@ public class DemoToBetterApplication {
 		SpringApplication.run(DemoToBetterApplication.class, args);
 
 		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(); 
-		log.info(encoder.encode("passs"));
+		log.info("Password look me : {}", encoder.encode("passs"));
 	}
 }

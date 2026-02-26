@@ -1,11 +1,30 @@
+# spring:
+#   application:
+#     name: demotobetter
+#   main:
+#     allow-bean-definition-overriding: true
+#   flyway:
+#     enabled: true
+#     locations: classpath:db/migration
+
+# logging:
+#   pattern:
+#     level: "%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]"
+
+# management:
+#   tracing:
+#     sampling:
+#       probability: 1.0
+
 spring:
   application:
     name: demotobetter
   main:
     allow-bean-definition-overriding: true
-  flyway:
-    enabled: true
-    locations: classpath:db/migration
+
+flyway:
+  enabled: true
+  locations: classpath:db/migration
 
 logging:
   pattern:
@@ -15,5 +34,3 @@ management:
   tracing:
     sampling:
       probability: 1.0
-
-      
