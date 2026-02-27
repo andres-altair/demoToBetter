@@ -21,6 +21,8 @@ import com.andres.demotobetter.modules.users.service.UserProfileService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
@@ -52,8 +54,9 @@ public class UseProfileController {
             @Parameter(name = "phone", description = "Filter by phone", example = "600001"),
             @Parameter(name = "page", description = "Page number", example = "0"),
             @Parameter(name = "size", description = "Page size", example = "10"),
-            @Parameter(name = "sort", description = "Sorting field and direction", example = "firstName,asc")
+            @Parameter(name = "sort", description = "Sorting field and direction", array = @ArraySchema(schema = @Schema(type = "string", example = "firstName,asc")))
     })
+
     @GetMapping
     public ResponseEntity<Page<UserProfileDTO>> getAll(
             @ParameterObject UserProfileFilterDTO filter, @ParameterObject Pageable pageable) {
