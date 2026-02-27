@@ -1,6 +1,6 @@
 # 🚀 demoToBetter
 
-API REST construida con Spring Boot 3.5.10 que implementa autenticación segura basada en JWT, autorización por roles y gestión completa de usuarios.
+API REST construida con Spring Boot 3.5.10 que implementa autenticación segura basada en JWT, autorización por roles y gestión completa de usuarios, migraciones con Flyway, mapeo con MapStruct, logging estructurado y un entorno completo de testing.
 
 ---
 
@@ -34,6 +34,105 @@ API REST construida con Spring Boot 3.5.10 que implementa autenticación segura 
 
 ### 🧩 Manejo global de excepciones
 - Respuestas estandarizadas mediante `ErrorDTO`
+
+### 📊 Observabilidad
+- Logging estructurado JSON con Logstash Encoder
+- Tracing distribuido con Micrometer 
+
+---
+
+## 📚 Documentación API (Swagger)
+
+La documentación interactiva está disponible una vez levantada la aplicación en:
+
+```bash
+http://localhost:8080/swagger-ui.html
+```
+
+También puedes acceder al JSON OpenAPI:
+
+```bash
+http://localhost:8080/v3/api-docs
+```
+
+Permite:
+
+- Probar endpoints autenticados  
+- Visualizar esquemas DTO  
+- Validar contratos de API  
+
+---
+
+## 🐳 Docker
+
+El proyecto incluye:
+
+- `Dockerfile`
+- `docker-compose.yml`
+- `docker-compose-dev.yml`
+- `entrypoint.sh`
+- `.env` y `.env.example`
+
+### 🔹 Construcción dev
+
+```bash
+ mvn spring-boot:run "-Dspring-boot.run.profiles=dev"
+```
+
+### 🔹 Construcción dev docker
+```bash
+docker compose -f docker-compose-dev.yml 
+```
+
+### 🔹 Construcción prod docker
+1. Inicilizar swarm y craer secret
+```bash
+ docker swarm init
+
+printf "%s" "user" | docker secret create pg_user -
+printf "%s" "SeguroP1" | docker secret create pg_password -
+printf "%s" "db" | docker secret create pg_db -
+printf "%s" "jdbc:postgresql://postgres:5432/db" | docker secret create pg_url -
+printf "%s" "mySecretJWTKeyProjectDEmoTOBetter02022026" | docker secret create jwt_secret -
+```
+
+2. Crear imagen:
+
+```bash
+docker build -t demotobetter .
+```
+
+3. Desplegar:
+
+```bash
+docker stack deploy -c docker-compose.yml mystack
+````
+
+Esto levanta:
+
+- API Spring Boot
+- Base de datos PostgreSQL (puerto 5435 expuesto)
+- Fluent Bit (recolección de logs)
+- Elasticsearch (almacenamiento de logs)
+- Kibana (visualización en http://localhost:5601)
+
+---
+
+### 📊 Observabilidad en Producción
+
+La aplicación envía logs estructurados (JSON) mediante el driver fluentd hacia Fluent Bit, que los reenvía a Elasticsearch.
+Puedes visualizar los logs en:
+
+```bash
+http://localhost:5601
+````
+
+Arquitectura de logging:
+
+```bash
+Spring Boot → Fluentd Driver → Fluent Bit → Elasticsearch → Kibana
+````
+
 
 ---
 
@@ -138,7 +237,10 @@ Relaciones principales:
 | 🔑 JJWT            | 0.13.0             |
 | 🧪 JUnit 5         | Testing            |
 | 🎭 Mockito         | Testing            |
+| 📡 Logstash        | Logging JSON       |
 | 📊 JaCoCo          | Coverage           |
+| 📈 Micrometer      | Tracing            |
+
 
 
 ---
