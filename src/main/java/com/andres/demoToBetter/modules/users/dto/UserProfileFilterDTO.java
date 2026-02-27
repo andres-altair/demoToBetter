@@ -13,7 +13,7 @@ import lombok.Setter;
 @Setter
 public class UserProfileFilterDTO {
 
-    @Schema(description = "Filter by username", example = "Andrés")
+    @Schema(description = "Filter by username", example = "user")
     private String firstName;
 
     @Schema(description = "Filter by last name", example = "Molina")
