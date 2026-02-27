@@ -3,6 +3,7 @@ package com.andres.demotobetter.modules.users.controller;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -19,6 +20,7 @@ import com.andres.demotobetter.modules.users.mapper.UserProfileMapper;
 import com.andres.demotobetter.modules.users.service.UserProfileService;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
@@ -44,11 +46,17 @@ public class UseProfileController {
      *                 lastName, phone)
      * @param pageable pagination and sorting information
      */
-    @Operation(summary = "List profiles", description = "It provides a paginated list of active profiles.")
+    @Operation(summary = "List profiles", description = "It provides a paginated list of active profiles.", parameters = {
+            @Parameter(name = "firstName", description = "Filter by first name", example = "User"),
+            @Parameter(name = "lastName", description = "Filter by last name", example = "Last"),
+            @Parameter(name = "phone", description = "Filter by phone", example = "600001"),
+            @Parameter(name = "page", description = "Page number", example = "0"),
+            @Parameter(name = "size", description = "Page size", example = "10"),
+            @Parameter(name = "sort", description = "Sorting field and direction", example = "firstName,asc")
+    })
     @GetMapping
     public ResponseEntity<Page<UserProfileDTO>> getAll(
-            UserProfileFilterDTO filter,
-            Pageable pageable) {
+            @ParameterObject UserProfileFilterDTO filter, @ParameterObject Pageable pageable) {
         log.debug("Viewing paginated list of profiles with filters: {}", filter);
 
         Page<UserProfileDTO> users = userService.findAll(filter, pageable)

@@ -18,6 +18,6 @@ COPY --from=builder --chown=spring:spring /app/target/*.jar app.jar
 COPY --chown=spring:spring entrypoint.sh /app/entrypoint.sh 
 RUN chmod +x /app/entrypoint.sh
 USER spring:spring
-ENTRYPOINT ["/app/entrypoint.sh"]
+ENTRYPOINT ["sh" , "/app/entrypoint.sh"]
 
 
