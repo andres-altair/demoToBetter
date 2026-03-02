@@ -21,6 +21,7 @@ import com.andres.demotobetter.modules.users.repository.UserProfileRepository;
 import com.andres.demotobetter.modules.users.spec.UserProfileSpecification;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Class that implements UserProfileService.
@@ -29,9 +30,9 @@ import lombok.AllArgsConstructor;
  */
 @Service
 @AllArgsConstructor
+@Slf4j
 public class UserProfileServiceImpl implements UserProfileService {
     private static final int MAX_PAGE_SIZE = 50;
-    // Allowed fields for sorting (must match UserProfile properties)
     private static final List<String> ALLOWED_SORT_FIELDS = List.of("id", "firstName", "lastName", "phone");
     private static final String ERR_BAD_REQUEST = "USR_400";
     private static final String ERR_NOT_FOUND = "USR_404";
@@ -42,17 +43,20 @@ public class UserProfileServiceImpl implements UserProfileService {
 
     @Override
     public Page<UserProfile> findAll(UserProfileFilterDTO filter, Pageable pageable) {
-
+        log.debug("Running paginated user search. Filters: {}", filter);
         if (pageable.getPageSize() > 50) {
+            log.warn("Request for excessive page size: {}", pageable.getPageSize());
             throw new BadRequestException(ERR_BAD_REQUEST, "Page size cannot exceed " + MAX_PAGE_SIZE);
         }
 
         if (pageable.getPageNumber() < 0) {
+            log.warn("Attempt to sort by field not allowed: {}", pageable.getPageNumber());
             throw new BadRequestException(ERR_BAD_REQUEST, "Page number cannot be negative");
         }
 
         pageable.getSort().forEach(order -> {
             if (!ALLOWED_SORT_FIELDS.contains(order.getProperty())) {
+                log.warn("Attempt to sort by field not allowed: {}", order.getProperty());
                 throw new BadRequestException(ERR_BAD_REQUEST,
                         "Sorting by '" + order.getProperty() + "' is not allowed");
             }
@@ -69,10 +73,13 @@ public class UserProfileServiceImpl implements UserProfileService {
     @Override
     @SuppressWarnings("null")
     public UserProfile findById(Long id) {
+        log.debug("Looking for user profile with ID: {}", id);
         validateId(id);
 
-        return repository.findById(id).orElseThrow(
-                () -> new NotFoundException(ERR_NOT_FOUND, "User with ID " + id + " does not exist"));
+        return repository.findById(id).orElseThrow(() -> {
+            log.warn("Search failed: User with ID {} does not exist", id);
+            return new NotFoundException(ERR_NOT_FOUND, "User with ID " + id + " does not exist");
+        });
     }
 
     /**
@@ -82,6 +89,7 @@ public class UserProfileServiceImpl implements UserProfileService {
     @Transactional
     @Override
     public UserProfileDTO save(UserProfileCreateDTO dto) {
+        log.info("Creating new user: {}", dto.getEmail());
         UserSecurity security = userSecurityService.createSecurityUser(
                 dto.getEmail(),
                 dto.getPassword(),
@@ -89,29 +97,37 @@ public class UserProfileServiceImpl implements UserProfileService {
         UserProfile profile = mapper.toEntity(dto);
         profile.setUserSecurity(security);
         repository.save(profile);
+        log.info("User saved successfully with ID: {}", profile.getUserSecurity().getId());
         return mapper.toDTO(profile);
     }
 
     @Override
-    @SuppressWarnings("null")
     public void delete(Long id) {
+        log.info("Deactivating user with ID: {}", id);
         validateId(id);
 
         userSecurityService.disableUser(id);
+        log.info("User ID: {} marked as inactive", id);
     }
 
     @Override
     public UserProfile update(Long id, UserProfile updatedUser) {
+        log.info("Starting profile update ID: {}", id);
+
         validateId(id);
 
         @SuppressWarnings("null")
         UserProfile existing = repository.findById(id)
-                .orElseThrow(() -> new NotFoundException(ERR_NOT_FOUND, "User with ID " + id + " does not exist"));
+                .orElseThrow(() -> {
+                    log.warn("Update failed: User with ID {} does not exist", id);
+                    return new NotFoundException(ERR_NOT_FOUND, "User with ID " + id + " does not exist");
+                });
 
         existing.setFirstName(updatedUser.getFirstName());
         existing.setLastName(updatedUser.getLastName());
         existing.setPhone(updatedUser.getPhone());
         existing.setAvatarUrl(updatedUser.getAvatarUrl());
+        log.info("Profile ID: {} successfully updated", id);
         return repository.save(existing);
     }
 

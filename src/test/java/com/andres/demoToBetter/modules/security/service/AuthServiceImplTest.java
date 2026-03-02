@@ -57,10 +57,11 @@ class AuthServiceImplTest {
 
         ResponseLoginTokenDTO response = authService.login(loginDTO);
 
-        assertEquals("jwt-token", response.getAcsessToken());
+        assertEquals("jwt-token", response.getAccessToken());
         assertEquals("refresh-token", response.getRefreshToken());
         verify(authenticationManager)
-                .authenticate(new UsernamePasswordAuthenticationToken(loginDTO.getEmail(), loginDTO.getPassword()));
+                .authenticate(any(UsernamePasswordAuthenticationToken.class));
+
         verify(userDetailsServiceImpl).loadUserByUsername(loginDTO.getEmail());
         verify(jwtService).generateToken(userDetails);
         verify(refreshTokenService).create(userSecurity);
@@ -68,17 +69,32 @@ class AuthServiceImplTest {
     }
 
     @Test
-    void login_WhenInvalidCredentials_ThrowException() {
-        LoginDTO loginDTO = new LoginDTO("andres@mail.com", "password");
-        doThrow(new BadCredentialsException("Bad credentials"))
-                .when(authenticationManager)
-                .authenticate(any(UsernamePasswordAuthenticationToken.class));
+    void login_ShouldThrowBadRequestException_WhenUserDoesNotExistInRepo() {
+        LoginDTO loginDTO = new LoginDTO("missing@mail.com", "password");
 
-        assertThrows(BadCredentialsException.class, () -> {
+        when(userDetailsServiceImpl.loadUserByUsername(anyString())).thenReturn(mock(UserDetails.class));
+        when(userSecurityRepository.findByEmail(anyString())).thenReturn(Optional.empty());
+
+        assertThrows(BadRequestException.class, () -> {
             authService.login(loginDTO);
         });
+
+        verify(authenticationManager)
+                .authenticate(any(UsernamePasswordAuthenticationToken.class));
+        verify(userSecurityRepository).findByEmail(loginDTO.getEmail());
+        verifyNoInteractions(jwtService, refreshTokenService);
+    }
+
+    @Test
+    void login_WhenInvalidCredentials_ThrowException() {
+        LoginDTO loginDTO = new LoginDTO("andres@mail.com", "password");
+
+        when(authenticationManager.authenticate(any()))
+                .thenThrow(new BadCredentialsException("Invalid credentials"));
+
+        assertThrows(BadCredentialsException.class, () -> authService.login(loginDTO));
         verify(authenticationManager).authenticate(any(UsernamePasswordAuthenticationToken.class));
-        verifyNoMoreInteractions(userDetailsServiceImpl, jwtService, refreshTokenService, userSecurityRepository);
+        verifyNoInteractions(userDetailsServiceImpl, jwtService, refreshTokenService, userSecurityRepository);
     }
 
     @Test
@@ -103,7 +119,7 @@ class AuthServiceImplTest {
 
         ResponseLoginTokenDTO response = authService.refresh(oldTokenString);
 
-        assertEquals("new-access-token", response.getAcsessToken());
+        assertEquals("new-access-token", response.getAccessToken());
         assertEquals("new-refresh-token", response.getRefreshToken());
         verify(refreshTokenService).validate(oldTokenString);
         verify(jwtService).extractUsername(oldTokenString);
@@ -125,15 +141,39 @@ class AuthServiceImplTest {
     }
 
     @Test
-    void refresh_WhenTokenDoesNotBelongToUser_ThrowsBadRequest(){
+    void refresh_WhenTokenDoesNotBelongToUser_ThrowsBadRequest() {
         String token = "token";
         String username = "andres@mail.com";
         UserSecurity userSecurity = new UserSecurity();
         userSecurity.setEmail(username);
-        RefreshToken dbToken = new RefreshToken(); dbToken.setUser(userSecurity);
+        RefreshToken dbToken = new RefreshToken();
+        dbToken.setUser(userSecurity);
 
         when(refreshTokenService.validate(token)).thenReturn(true);
         when(jwtService.extractUsername(token)).thenReturn("correct@example.com");
+        when(refreshTokenService.getByToken(token)).thenReturn(dbToken);
+
+        assertThrows(BadRequestException.class, () -> authService.refresh(token));
+
+        verify(refreshTokenService).validate(token);
+        verify(jwtService).extractUsername(token);
+        verify(refreshTokenService).getByToken(token);
+        verifyNoMoreInteractions(refreshTokenService, jwtService);
+    }
+
+    @Test
+    void refresh_WhenUserIsInactive_ThrowException() {
+        String token = "token";
+        String username = "andres@mail.com";
+        UserSecurity user = new UserSecurity();
+        user.setEmail(username);
+        user.setActive(false);
+        RefreshToken dbToken = new RefreshToken();
+        dbToken.setToken(token);
+        dbToken.setUser(user);
+
+        when(refreshTokenService.validate(token)).thenReturn(true);
+        when(jwtService.extractUsername(token)).thenReturn(username);
         when(refreshTokenService.getByToken(token)).thenReturn(dbToken);
 
         assertThrows(BadRequestException.class, () -> authService.refresh(token));

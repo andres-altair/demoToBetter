@@ -14,6 +14,7 @@ import com.andres.demotobetter.modules.security.service.jwt.JwtService;
 import com.andres.demotobetter.modules.security.service.jwt.RefreshTokenService;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Class that implements AuthService.
@@ -22,6 +23,7 @@ import lombok.RequiredArgsConstructor;
  */
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class AuthServiceImpl implements AuthService {
     private static final String ERR_BAD_REQUEST = "AUTH_400";
 
@@ -33,6 +35,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public ResponseLoginTokenDTO login(LoginDTO loginDTO) {
+        log.info("Starting authentication process for: {}", loginDTO.getEmail());
 
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -41,18 +44,24 @@ public class AuthServiceImpl implements AuthService {
 
         var userDetails = userDetailsServiceImpl.loadUserByUsername(loginDTO.getEmail());
         var userSecurity = userSecurityRepository.findByEmail(loginDTO.getEmail())
-                .orElseThrow(() -> new BadRequestException(ERR_BAD_REQUEST, "User not found"));
+                .orElseThrow(() -> {
+                    log.warn("Login failure: User {} not found in repository", loginDTO.getEmail());
+                    return new BadRequestException(ERR_BAD_REQUEST, "User not found");
+                });
 
         String accessToken = jwtService.generateToken(userDetails);
         RefreshToken refreshToken = refreshTokenService.create(userSecurity);
 
+        log.info("Successful authentication for: {}. Token generated.", loginDTO.getEmail());
         return new ResponseLoginTokenDTO(accessToken, refreshToken.getToken());
     }
 
     @Override
     public ResponseLoginTokenDTO refresh(String refreshToken) {
+        log.info("Starting token refresh process");
 
         if (!refreshTokenService.validate(refreshToken)) {
+            log.warn("Refresh attempt failed: Invalid or expired token");
             throw new BadRequestException(ERR_BAD_REQUEST, "Invalid or expired refresh token");
         }
 
@@ -63,16 +72,19 @@ public class AuthServiceImpl implements AuthService {
         RefreshToken oldToken = refreshTokenService.getByToken(refreshToken);
 
         if (!oldToken.getUser().getEmail().equals(username)) {
+            log.error("SECURITY BREACH: The token does not belong to the user {}", username);
             throw new BadRequestException(ERR_BAD_REQUEST, "Token does not belong to this user");
         }
 
         if (!oldToken.getUser().isActive()) {
+            log.warn("Refreshment denied: The user account {} is disabled", username);
             throw new BadRequestException(ERR_BAD_REQUEST, "User account is disabled");
         }
         RefreshToken newToken = refreshTokenService.rotate(oldToken);
 
         String newAccessToken = jwtService.generateToken(userDetails);
 
+        log.info("Token successfully refreshed for the user: {}", username);
         return new ResponseLoginTokenDTO(newAccessToken, newToken.getToken());
     }
 }

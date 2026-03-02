@@ -11,6 +11,7 @@ import com.andres.demotobetter.modules.security.entity.UserSecurity;
 import com.andres.demotobetter.modules.security.repository.UserSecurityRepository;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Class that implements UserSecurityService.
@@ -19,6 +20,7 @@ import lombok.AllArgsConstructor;
  */
 @Service
 @AllArgsConstructor
+@Slf4j
 public class UserSecurityServiceImpl implements UserSecurityService {
     private static final String ERR_BAD_REQUEST = "ERR_BAD_REQUEST";
     private static final String ERR_NOT_FOUND = "USR_404";
@@ -29,7 +31,10 @@ public class UserSecurityServiceImpl implements UserSecurityService {
 
     @Override
     public UserSecurity createSecurityUser(String email, String password, Set<String> roles) {
+        log.debug("Checking email availability for new user: {}", email);
+
         if (userSecurityRepository.findByEmail(email).isPresent()) {
+            log.warn("Failed to create user: Email {} is already in use", email);
             throw new BadRequestException(ERR_BAD_REQUEST, "Email already in use");
         }
         UserSecurity userSecurity = new UserSecurity();
@@ -37,14 +42,23 @@ public class UserSecurityServiceImpl implements UserSecurityService {
         userSecurity.setEmail(email);
         userSecurity.setPassword(passwordEncoder.encode(password));
         userSecurity.setRoles(roleService.resolveRoles(roles));
+        log.info("Credentials for security created successfully for user: {}", email);
         return userSecurityRepository.save(userSecurity);
     }
 
+    @SuppressWarnings("null")
     @Override
     public void disableUser(Long id) {
-        UserSecurity user = userSecurityRepository.findById(id) 
-        .orElseThrow(() -> new NotFoundException(ERR_NOT_FOUND, "User with ID " + id + " does not exist")); 
-        user.setActive(false); 
+        log.info("Deactivation request for security user with ID: {}", id);
+
+        UserSecurity user = userSecurityRepository.findById(id)
+                .orElseThrow(() -> {
+                    log.warn("Deactivation failed: Security user with ID {} does not exist", id);
+                    return new NotFoundException(ERR_NOT_FOUND, "User with ID " + id + " does not exist");
+                });
+
+        user.setActive(false);
         userSecurityRepository.save(user);
+        log.info("User ID status: {} changed to INACTIVE", id);
     }
 }

@@ -1,25 +1,18 @@
 spring:
-  datasource:
-    url: jdbc:h2:mem:testdb
-    driver-class-name: org.h2.Driver
-    username: sa
-    password:
+  application:
+    name: demotobetter
+  main:
+    allow-bean-definition-overriding: true
 
-  jpa:
-    hibernate:
-      ddl-auto: none   
-    database-platform: org.hibernate.dialect.H2Dialect
+flyway:
+  enabled: true
+  locations: classpath:db/migration
 
-  flyway:
-    enabled: true
-    locations: classpath:db/migration
+logging:
+  pattern:
+    level: "%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]"
 
-  h2:
-    console:
-      enabled: true
-      path: /h2-console
-
-jwt:
-  secret: "mySecretJWTKeyProjectDEmoTOBetter02022026"
-  expiration: 900000 
-  refresh: 604800000
+management:
+  tracing:
+    sampling:
+      probability: 1.0

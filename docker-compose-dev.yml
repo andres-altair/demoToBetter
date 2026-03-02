@@ -1,0 +1,12 @@
+services:
+  app:
+    build:
+      context: .
+      target: development
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+      - JWT_SECRET=${DEV_JWT}
+    ports:
+      - "8080:8080"
+    volumes:
+      - .:/app

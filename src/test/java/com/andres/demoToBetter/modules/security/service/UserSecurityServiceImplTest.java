@@ -15,6 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.andres.demotobetter.common.exception.custom.BadRequestException;
+import com.andres.demotobetter.common.exception.custom.NotFoundException;
 import com.andres.demotobetter.modules.security.entity.Role;
 import com.andres.demotobetter.modules.security.entity.UserSecurity;
 import com.andres.demotobetter.modules.security.repository.UserSecurityRepository;
@@ -68,5 +69,29 @@ class UserSecurityServiceImplTest {
         verify(roleService).resolveRoles(Set.of("USER"));
         verify(userSecurityRepository).save(any(UserSecurity.class));
         verifyNoMoreInteractions(userSecurityRepository, roleService, passwordEncoder);
+    }
+
+    @Test
+    void disableUser_WhenUserExist_DisableSuccessfully() {
+        UserSecurity user = new UserSecurity();
+        user.setActive(true);
+
+        when(userSecurityRepository.findById(1L)).thenReturn(Optional.of(user));
+
+        service.disableUser(1L);
+
+        assertFalse(user.isActive());
+        verify(userSecurityRepository).findById(1L);
+        verify(userSecurityRepository).save(user);
+        verifyNoMoreInteractions(userSecurityRepository);
+    }
+
+    @Test
+    void disableUser_WhenUserNotExists_ThrowException() {
+        when(userSecurityRepository.findById(1L)).thenReturn(Optional.empty());
+
+        assertThrows(NotFoundException.class, () -> service.disableUser(1L));
+        verify(userSecurityRepository).findById(1L);
+        verifyNoMoreInteractions(userSecurityRepository);
     }
 }
