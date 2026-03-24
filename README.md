@@ -85,14 +85,20 @@ docker compose -f docker-compose-dev.yml up -d
 ```
 
 ### 🔹 Construcción prod docker
+<details>
+<summary>⚠️ <b>Nota de compatibilidad: Errores de formato (LF vs CRLF)</b></summary>
+
 > [!IMPORTANT]
-> **Compatibilidad Windows/Linux (LF vs CRLF):**  
-> Si clonas este proyecto en **Windows**, Git podría convertir los finales de línea de los scripts `.sh` a formato invisible de Windows (CRLF), lo que rompería la ejecución dentro de Docker. 
+> **Compatibilidad Windows/Linux:**  
+> Si clonas este proyecto en **Windows**, Git podría convertir los finales de línea de los scripts `.sh` a formato de Windows (CRLF), lo que rompería la ejecución dentro de Docker. 
 > 
-> **Soluciones incluidas:**
-> 1. He incluido un archivo `.gitattributes` que fuerza a Git a usar el formato correcto (LF) al clonar.
+> **Soluciones incluidas en este repo:**
+> 1. **.gitattributes:** Forza a Git a usar el formato correcto (LF) al clonar.
+> 2. **Dockerfile:** Utiliza `sed` para limpiar automáticamente los scripts durante la construcción de la imagen.
 >
-> Si aun así encuentras el error `not found` al ejecutar el entrypoint, asegúrate de tener configurado tu terminal o editor en modo **LF**.
+> *Si aun así encuentras el error `not found` al ejecutar el entrypoint, asegúrate de que tu editor (VS Code, etc.) tenga configurado el modo **LF**.*
+
+</details>
 
 1. Inicilizar swarm y craer secret
 ```bash
