@@ -81,7 +81,7 @@ El proyecto incluye:
 
 ### 🔹 Construcción dev docker
 ```bash
-docker compose -f docker-compose-dev.yml 
+docker compose -f docker-compose-dev.yml up -d
 ```
 
 ### 🔹 Construcción prod docker
