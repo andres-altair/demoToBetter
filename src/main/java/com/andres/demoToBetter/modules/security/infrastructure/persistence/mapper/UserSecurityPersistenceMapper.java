@@ -8,6 +8,5 @@ import com.andres.demotobetter.modules.security.infrastructure.persistence.entit
 public interface UserSecurityPersistenceMapper {
 
     UserSecurity toDomain(UserSecurityEntity entity);
-
     UserSecurityEntity toEntity(UserSecurity domain);
 }

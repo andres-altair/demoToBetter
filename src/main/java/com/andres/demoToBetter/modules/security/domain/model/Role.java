@@ -4,7 +4,11 @@ import java.util.HashSet;
 import java.util.Set;
 
 import lombok.*;
-
+/**
+ * Class representing a role in the system.
+ * 
+ * @author andres
+ */
 @Getter
 @Setter
 @NoArgsConstructor

@@ -1,6 +1,10 @@
 package com.andres.demotobetter.modules.security.domain.service;
 
-// modules/security/domain/service/PasswordHasherPort.java
+/**
+ * Interface for password hashing operations.
+ * 
+ * @author andres
+ */
 public interface PasswordHasherPort {
     String encode(String rawPassword);
 }

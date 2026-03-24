@@ -1,7 +1,11 @@
 package com.andres.demotobetter.modules.users.domain.model;
 
 import lombok.*;
-
+/**
+ * Class representing a user profile.
+ * 
+ * @author andres
+ */
 @Data @Builder
 @AllArgsConstructor
 @NoArgsConstructor

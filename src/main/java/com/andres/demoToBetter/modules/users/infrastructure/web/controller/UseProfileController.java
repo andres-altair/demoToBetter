@@ -7,6 +7,10 @@ import com.andres.demotobetter.modules.users.domain.model.PageResponse;
 import com.andres.demotobetter.modules.users.domain.model.UserProfileFilter;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +24,8 @@ import org.springframework.web.bind.annotation.*;
 
 /**
  * REST controller for managing user profile resources.
- * Totalmente desacoplado de la lógica de negocio y persistencia.
+ * 
+ * @author andres
  */
 @Tag(name = "UserProfiles Controller", description = "Endpoints for managing user profiles")
 @RestController
@@ -29,17 +34,21 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 public class UseProfileController {
 
-    // Inyección de casos de uso individuales (Single Action Use Cases)
     private final CreateUserProfileUseCase createUseCase;
     private final GetUserProfileByIdUseCase getByIdUseCase;
     private final GetUserProfileUseCase getUserUseCase;
     private final UpdateUserProfileUseCase updateUseCase;
     private final DeleteUserProfileUseCase deleteUseCase;
 
-    /**
-     * Obtiene una lista paginada de perfiles de usuario.
-     */
-    @Operation(summary = "List profiles", description = "Provides a paginated list of profiles using Hexagonal SearchPage.")
+    @Operation(summary = "List profiles", description = "It provides a paginated list of active profiles.", parameters = {
+            @Parameter(name = "firstName", description = "Filter by first name", example = "User"),
+            @Parameter(name = "lastName", description = "Filter by last name", example = "Last"),
+            @Parameter(name = "phone", description = "Filter by phone", example = "600001"),
+            @Parameter(name = "page", description = "Page number", example = "0"),
+            @Parameter(name = "size", description = "Page size", example = "10"),
+            @Parameter(name = "sort", description = "Sorting field and direction", array = @ArraySchema(schema = @Schema(type = "string", example = "firstName,asc")))
+    })
+
     @GetMapping
     public ResponseEntity<PageResponse<UserProfileDTO>> getAll(
             @ParameterObject UserProfileFilter filter,
@@ -54,9 +63,6 @@ public class UseProfileController {
         return ResponseEntity.ok(getUserUseCase.execute(filter, query));
     }
 
-    /**
-     * Obtiene un perfil por su ID.
-     */
     @Operation(summary = "Get profile by ID")
     @GetMapping("/{id}")
     public ResponseEntity<UserProfileDTO> getById(@PathVariable Long id) {
@@ -64,9 +70,6 @@ public class UseProfileController {
         return ResponseEntity.ok(getByIdUseCase.execute(id));
     }
 
-    /**
-     * Crea un nuevo perfil de usuario.
-     */
     @Operation(summary = "Register a new profile")
     @PostMapping
     public ResponseEntity<UserProfileDTO> create(@Valid @RequestBody UserProfileCreateDTO dto) {
@@ -76,9 +79,7 @@ public class UseProfileController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    /**
-     * Actualiza un perfil existente.
-     */
+
     @Operation(summary = "Update profile by ID")
     @PutMapping("/{id}")
     public ResponseEntity<UserProfileDTO> update(
@@ -91,9 +92,7 @@ public class UseProfileController {
         return ResponseEntity.ok(response);
     }
 
-    /**
-     * Elimina (o desactiva) un perfil por ID.
-     */
+
     @Operation(summary = "Deactivate profile by ID")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {

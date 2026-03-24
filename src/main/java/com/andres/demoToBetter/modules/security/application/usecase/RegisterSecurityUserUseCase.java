@@ -11,9 +11,15 @@ import com.andres.demotobetter.modules.security.domain.repository.UserSecurityRe
 import com.andres.demotobetter.modules.security.domain.service.PasswordHasherPort;
 
 import lombok.RequiredArgsConstructor;
-
+import lombok.extern.slf4j.Slf4j;
+/**
+ * Service class for registering a new user.
+ * 
+ * @author andres
+ */
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class RegisterSecurityUserUseCase {
     private final UserSecurityRepositoryPort repository;
     private final ResolveRolesUseCase resolveRolesUseCase; 
@@ -25,6 +31,7 @@ public class RegisterSecurityUserUseCase {
     @Transactional
     public UserSecurity execute(String email, String password, Set<String> roles) {
         if (repository.findByEmail(email).isPresent()) {
+            log.warn("Failed to create user: Email {} is already in use", email);
             throw new BadRequestException(ERR_BAD_REQUEST, "Email already in use");
         }
 
@@ -34,6 +41,7 @@ public class RegisterSecurityUserUseCase {
         user.setPassword(passwordHasher.encode(password));
         user.setRoles(resolveRolesUseCase.execute(roles));
         
+        log.info("Credentials for security created successfully for user: {}", email);
         return repository.save(user);
     }
 }

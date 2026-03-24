@@ -9,7 +9,11 @@ import com.andres.demotobetter.modules.security.application.usecase.RegisterSecu
 import com.andres.demotobetter.modules.security.application.usecase.DisableUserSecurityUseCase;
 
 import lombok.RequiredArgsConstructor;
-
+/**
+ * Adapter for UserSecurityManagementPort
+ * 
+ * @author andres
+ */
 @Component
 @RequiredArgsConstructor
 public class UserSecurityManagementAdapter implements UserSecurityManagementPort {

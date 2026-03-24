@@ -10,7 +10,11 @@ import com.andres.demotobetter.modules.security.infrastructure.persistence.mappe
 import com.andres.demotobetter.modules.security.infrastructure.persistence.repository.RoleJpaRepository;
 
 import lombok.RequiredArgsConstructor;
-
+/**
+ * Adapter class for Role persistence operations.
+ * 
+ * @author andres
+ */
 @Component
 @RequiredArgsConstructor
 public class RolePersistenceAdapter implements RoleRepositoryPort {

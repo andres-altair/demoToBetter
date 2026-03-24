@@ -10,7 +10,11 @@ import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
-// modules/security/infrastructure/persistence/adapter/AuthRefreshTokenPersistenceAdapter.java
+/**
+ * Adapter class for RefreshToken persistence operations.
+ * 
+ * @author Firstname Lastname
+ */
 @Component
 @RequiredArgsConstructor
 public class RefreshTokenPersistenceAdapter implements RefreshTokenPort {

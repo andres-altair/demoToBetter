@@ -13,7 +13,11 @@ import com.andres.demotobetter.modules.users.domain.repository.UserProfileReposi
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
+/**
+ * Service class for updating a user profile.
+ * 
+ * @author andres
+ */
 @Service
 @RequiredArgsConstructor
 @Slf4j

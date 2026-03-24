@@ -25,7 +25,6 @@ import java.util.Map;
 @Slf4j
 public class AuthController {
 
-    // Inyectamos Casos de Uso, no Servicios
     private final LoginUseCase loginUseCase;
     private final AuthRefreshTokenUseCase refreshTokenUseCase;
 
@@ -33,7 +32,6 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseLoginTokenDTO login(@RequestBody @Valid LoginDTO loginDTO) {
         log.info("User login attempt: {}", loginDTO.getEmail());
-        // Ejecuta la lógica de autenticación e identidad
         return loginUseCase.execute(loginDTO);
     }
 
@@ -42,7 +40,6 @@ public class AuthController {
     public ResponseLoginTokenDTO refresh(@RequestBody Map<String, String> body) {
         String tokenStr = body.get("refreshToken");
         log.info("Token refresh request received");
-        // Ejecuta la lógica de validación y rotación de tokens
         return refreshTokenUseCase.execute(tokenStr);
     }
 }

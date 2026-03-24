@@ -10,7 +10,11 @@ import com.andres.demotobetter.modules.security.domain.service.TokenServicePort;
 
 import javax.crypto.SecretKey;
 import java.util.Date;
-
+/**
+ * Adapter class for JWT token generation and validation.
+ * 
+ * @author Firstname Lastname
+ */
 @Component
 public class JwtAdapter implements TokenServicePort {
 
