@@ -10,7 +10,11 @@ import com.andres.demotobetter.modules.users.domain.repository.UserProfileReposi
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
+/**
+ * Service class for getting a user by ID.
+ * 
+ * @author andres
+ */
 @Service
 @AllArgsConstructor
 @Slf4j

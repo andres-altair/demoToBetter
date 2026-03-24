@@ -19,4 +19,3 @@ public interface UserProfilePersistenceMapper {
     @Mapping(target = "userSecurity", ignore = true)
     void updateEntityFromDomain(UserProfile domain, @MappingTarget UserProfileEntity entity);
 }
-

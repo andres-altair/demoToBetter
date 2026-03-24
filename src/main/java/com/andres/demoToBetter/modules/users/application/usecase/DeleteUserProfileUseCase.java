@@ -8,7 +8,11 @@ import com.andres.demotobetter.modules.users.domain.repository.UserSecurityManag
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
+/**
+ * Service class for deactivating a user.   
+ * 
+ * @author andres
+ */
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -23,6 +27,7 @@ public class DeleteUserProfileUseCase {
         log.info("Deactivating user with ID: {}", id);
 
         if (id == null) {
+            log.warn("Deactivation failed: ID cannot be null");
             throw new NotFoundException(ERR_NOT_FOUND, "ID cannot be null");
         }
 

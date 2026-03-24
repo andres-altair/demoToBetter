@@ -8,7 +8,11 @@ import com.andres.demotobetter.modules.security.domain.repository.UserSecurityRe
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
+/**
+ * Service class for deactivating a user.
+ * 
+ * @author andres
+ */
 @Service
 @RequiredArgsConstructor
 @Slf4j

@@ -13,7 +13,11 @@ import com.andres.demotobetter.modules.users.domain.repository.UserSecurityManag
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
+/**
+ * Service class for creating a new user.
+ * 
+ * @author andres
+ */
 @Service
 @AllArgsConstructor
 @Slf4j

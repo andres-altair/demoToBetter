@@ -10,8 +10,12 @@ import lombok.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+/**
+ * Class representing a user in the system.
+ * 
+ * @author andres
+ */
 public class UserSecurity {
-
     private Long id;
     private String username;
     private String email;

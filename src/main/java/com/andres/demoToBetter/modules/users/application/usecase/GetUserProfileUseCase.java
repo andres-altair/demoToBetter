@@ -14,9 +14,15 @@ import com.andres.demotobetter.modules.users.domain.model.UserProfileFilter;
 import com.andres.demotobetter.modules.users.domain.repository.UserProfileRepositoryPort;
 
 import lombok.RequiredArgsConstructor;
-
+import lombok.extern.slf4j.Slf4j;
+/**
+ * Service class for getting users.
+ * 
+ * @author andres
+ */
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class GetUserProfileUseCase {
     
     private final UserProfileRepositoryPort repository;
@@ -27,14 +33,17 @@ public class GetUserProfileUseCase {
 
     public PageResponse<UserProfileDTO> execute(UserProfileFilter filter, PageQuery query) {
         if (query.size() > 50) {
+            log.warn("Page size exceed 50");
             throw new BadRequestException(ERR_BAD_REQUEST, "Page size cannot exceed 50");
         }
         
         if (query.page() < 0) {
+            log.warn("Page number cannot be negative");
             throw new BadRequestException(ERR_BAD_REQUEST, "Page number cannot be negative");
         }
 
         if (!ALLOWED_SORT_FIELDS.contains(query.sortBy())) {
+            log.warn("Sorting by '{}' is not allowed", query.sortBy());
             throw new BadRequestException(ERR_BAD_REQUEST, "Sorting by '" + query.sortBy() + "' is not allowed");
         }
 

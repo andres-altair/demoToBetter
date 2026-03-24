@@ -24,7 +24,11 @@ import com.andres.demotobetter.modules.users.infrastructure.persistence.spec.Use
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
-
+/**
+ * Adapter class for UserProfile persistence operations.    
+ * 
+ * @author andres
+ */
 @Component
 @RequiredArgsConstructor
 public class UserProfilePersistenceAdapter implements UserProfileRepositoryPort {
@@ -34,6 +38,8 @@ public class UserProfilePersistenceAdapter implements UserProfileRepositoryPort 
 
     private final UserProfileJpaRepository jpaRepository;
     private final UserProfilePersistenceMapper mapper;
+    private static final String ERR_NOT_FOUND = "USR_404";
+
 
     @Override
     public UserProfile save(UserProfile domain) {
@@ -70,7 +76,7 @@ public class UserProfilePersistenceAdapter implements UserProfileRepositoryPort 
     @Override
     public UserProfile update(UserProfile domain) {
         UserProfileEntity entity = jpaRepository.findById(domain.getId())
-                .orElseThrow(() -> new NotFoundException("USR_404", "Profile not found"));
+                .orElseThrow(() -> new NotFoundException(ERR_NOT_FOUND, "Profile not found"));
 
         mapper.updateEntityFromDomain(domain, entity);
 

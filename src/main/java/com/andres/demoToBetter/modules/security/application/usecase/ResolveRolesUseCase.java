@@ -10,9 +10,16 @@ import com.andres.demotobetter.modules.security.domain.model.Role;
 import com.andres.demotobetter.modules.security.domain.repository.RoleRepositoryPort;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+/**
+ * Service class for resolving and validating role entities based on their names.
+ * 
+ * @author andres
+ */
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ResolveRolesUseCase {
     private final RoleRepositoryPort roleRepository;
 
@@ -31,7 +38,10 @@ public class ResolveRolesUseCase {
 
     private Role fetchRole(String name) {
         return roleRepository.findByName(name)
-                .orElseThrow(() -> new BadRequestException(ERR_BAD_REQUEST, "Role '" + name + "' not found"));
+                .orElseThrow(() -> {
+                            log.warn("Attempt to assign a non-existent role: {}", name);
+                            return new BadRequestException(ERR_BAD_REQUEST, "Role '" + name + "' not found");
+                        });
     }
 }
 

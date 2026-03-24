@@ -3,16 +3,18 @@ package com.andres.demotobetter.modules.security.domain.model;
 import java.util.Date;
 
 /**
- * Record de dominio para el Refresh Token (Java Puro).
+ * Class representing a refresh token in the system.
+ * 
+ * @author andres
  */
 public record RefreshToken(
     Long id,
     String token,
     Date expiryDate,
     boolean revoked,
-    UserSecurity user // Relación con el modelo de dominio UserSecurity
+    UserSecurity user 
 ) {
-    // Método de negocio para saber si ha expirado sin depender de JPA
+    
     public boolean isExpired() {
         return expiryDate.before(new Date());
     }

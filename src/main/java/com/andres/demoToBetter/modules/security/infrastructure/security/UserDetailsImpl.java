@@ -6,7 +6,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-// IMPORTANTE: Importamos el DOMINIO, no la Entity
 import com.andres.demotobetter.modules.security.domain.model.UserSecurity;
 
 public class UserDetailsImpl implements UserDetails {
@@ -16,19 +15,15 @@ public class UserDetailsImpl implements UserDetails {
     private final boolean active;
     private final Collection<? extends GrantedAuthority> authorities;
 
-    // El constructor ahora recibe el modelo de DOMINIO
     public UserDetailsImpl(UserSecurity user) {
         this.id = user.getId();
         this.email = user.getEmail();
         this.password = user.getPassword();
         this.active = user.isActive();
         
-        // Mapeo de roles y permisos desde el dominio
         this.authorities = user.getRoles().stream().flatMap(role -> {
-            // Autoridad del Rol (ej: ROLE_ADMIN)
             Stream<GrantedAuthority> roleAuthority = Stream.of(new SimpleGrantedAuthority(role.getName()));
             
-            // Autoridades de los Permisos (ej: READ_PRIVILEGE)
             Stream<GrantedAuthority> permissionAuthorities = role.getPermissions().stream()
                     .map(permission -> new SimpleGrantedAuthority(permission.getName()));
             

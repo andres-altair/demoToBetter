@@ -17,27 +17,34 @@ public class AuthRefreshTokenUseCase {
     private final TokenServicePort tokenService;
     private final RefreshTokenUseCase refreshTokenUseCase;
 
+    
+    private static final String ERR_BAD_REQUEST = "AUTH_400";
+
     public ResponseLoginTokenDTO execute (String tokenStr) {
-        log.info("Iniciando proceso de refresco de token");
+        log.info("Starting token refresh process");
 
         if (!refreshTokenUseCase.validate(tokenStr)) {
-            throw new BadRequestException("AUTH_401", "Invalid or expired refresh token");
+            log.warn("Refresh attempt failed: Invalid or expired token");
+            throw new BadRequestException(ERR_BAD_REQUEST, "Invalid or expired refresh token");
         }
 
         String username = tokenService.extractUsername(tokenStr);
         RefreshToken oldToken = refreshTokenUseCase.getByToken(tokenStr);
 
         if (!oldToken.user().getEmail().equals(username)) {
-            throw new BadRequestException("AUTH_403", "Token does not belong to this user");
+            log.warn("The token does not belong to the user {}", username);
+            throw new BadRequestException(ERR_BAD_REQUEST, "Token does not belong to this user");
         }
 
         if (!oldToken.user().isActive()) {
-            throw new BadRequestException("AUTH_403", "User account is disabled");
+            log.warn("Refreshment denied: The user account {} is disabled", username);
+            throw new BadRequestException(ERR_BAD_REQUEST, "User account is disabled");
         }
 
         RefreshToken newToken = refreshTokenUseCase.rotate(tokenStr);
         String newAccessToken = tokenService.generateToken(username);
 
+        log.info("Token successfully refreshed for the user: {}", username);
         return new ResponseLoginTokenDTO(newAccessToken, newToken.token());
     }
 
